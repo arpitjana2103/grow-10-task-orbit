@@ -1,0 +1,20 @@
+{
+  "name": "task-orbit",
+  "version": "1.0.0",
+  "description": "task management full-stack application",
+  "homepage": "https://github.com/arpitjana2103/grow-10-task-orbit#readme",
+  "bugs": {
+    "url": "https://github.com/arpitjana2103/grow-10-task-orbit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arpitjana2103/grow-10-task-orbit.git"
+  },
+  "license": "ISC",
+  "author": "Arpit Jana",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
