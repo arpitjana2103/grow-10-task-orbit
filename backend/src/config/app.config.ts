@@ -16,3 +16,7 @@ export const config = {
     FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN"),
     FRONTEND_GOOGLE_CALLBACK_URL: getEnv("FRONTEND_GOOGLE_CALLBACK_URL"),
 };
+
+export const runningOnProduction = function (): boolean {
+    return config.NODE_ENV === "production";
+};
