@@ -1,45 +1,49 @@
 {
     // Visit https://aka.ms/tsconfig to read more about this file
     "compilerOptions": {
-        // File Layout
-        "rootDir": "./src",
-        "outDir": "./dist",
+        // 📁 Project Structure
+        "rootDir": "./src", // Source code location (input folder)
+        "outDir": "./dist", // Compiled JS output directory
 
-        // Environment Settings
-        // See also https://aka.ms/tsconfig/module
-        "module": "nodenext",
-        "target": "ES2021",
-        // For nodejs:
-        "lib": ["esnext"],
-        "types": ["node"],
-        // and npm install -D @types/node
+        // 🌍 Runtime & Module System
+        "module": "nodenext", // Enables Node.js ESM + CommonJS interop
+        "target": "ES2021", // Output JS version (modern Node support)
+        "lib": ["esnext"], // Available JS APIs (latest features)
+        "types": ["node"], // Include Node.js global type definition ( npm install -D @types/node )
 
-        // Other Outputs
-        "sourceMap": false,
-        "declaration": false,
-        "declarationMap": false,
+        // 📦 Output Control
+        "sourceMap": false, // Disable .map files (smaller build)
+        "declaration": false, // Do not generate .d.ts files
+        "declarationMap": false, // Disable mapping for declarations
 
-        // Stricter Typechecking Options
-        "noUncheckedIndexedAccess": true,
-        "exactOptionalPropertyTypes": true,
+        // 🛡️ Type Safety
+        "strict": true, // Enable all strict type-checking rules
+        "noUncheckedIndexedAccess": true, // Adds undefined to unsafe index access
+        "exactOptionalPropertyTypes": true, // Optional props are strictly enforced
 
-        // Style Options
-        // "noImplicitReturns": true,
-        // "noImplicitOverride": true,
-        // "noUnusedLocals": true,
-        // "noUnusedParameters": true,
-        // "noFallthroughCasesInSwitch": true,
-        // "noPropertyAccessFromIndexSignature": true,
+        // ⚙️ Module Behavior (Important for ESM)
+        "verbatimModuleSyntax": true, // Keeps imports exactly as written (no rewriting)
+        "isolatedModules": true, // Ensures each file compiles independently
+        "moduleDetection": "force", // Treat all files as modules (no script mode)
 
-        // Recommended Options
-        "strict": true,
-        "jsx": "react-jsx",
-        "verbatimModuleSyntax": true,
-        "isolatedModules": true,
-        "noUncheckedSideEffectImports": true,
-        "moduleDetection": "force",
-        "skipLibCheck": true,
+        // 🚨 Code Safety
+        "noUncheckedSideEffectImports": true, // Warn on imports with hidden side effects
+
+        // ⚡ Performance
+        "skipLibCheck": true, // Skip type checking of node_modules (faster builds)
     },
-    "include": ["src/**/*.ts", "@types"],
-    "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
+
+    // 📂 File Inclusion
+    "include": [
+        "src/**/*.ts", // Include all TS files in src
+        "@types", // Include custom type definitions
+    ],
+
+    // 🚫 File Exclusion
+    "exclude": [
+        "node_modules", // Ignore dependencies
+        "dist", // Ignore build output
+        "test", // Ignore test folder
+        "**/*spec.ts", // Ignore test files
+    ],
 }
