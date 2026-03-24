@@ -10,8 +10,6 @@ import type { Request, Response, NextFunction } from "express";
 import { config, runningOnProduction } from "./config/app.config.js";
 
 const app = express();
-let num: number = 15;
-num = "Manu";
 
 // Middleware: Parses JSON request bodies
 // - Applies only to Content-Type: application/json

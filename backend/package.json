@@ -15,11 +15,11 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "dev": "concurrently \"tsc --noEmit --watch\" \"tsx watch --clear-screen=true src/index.ts\"",
-        "typecheck": "tsc --noEmit",
+        "dev": "tsx watch --clear-screen=true src/index.ts",
+        "dev-conc": "concurrently \"tsc --noEmit --watch\" \"tsx watch --clear-screen=true src/index.ts\"",
         "build": "tsc && copyfiles package.json dist",
         "start": "node dist/index.js",
-        "prepare": "husky"
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "cookie-session": "^2.1.1",
@@ -37,7 +37,6 @@
         "@types/node": "^25.5.0",
         "concurrently": "^9.2.1",
         "copyfiles": "^2.4.1",
-        "husky": "^9.1.7",
         "oxfmt": "^0.41.0",
         "oxlint": "^1.56.0",
         "tsx": "^4.21.0",
