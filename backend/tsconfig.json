@@ -6,7 +6,7 @@
         "outDir": "./dist", // Compiled JS output directory
 
         // 🌍 Runtime & Module System
-        "module": "nodenext", // Enables Node.js ESM + CommonJS interop
+        "module": "NodeNext", // Enables Node.js ESM + CommonJS interop
         "target": "ES2021", // Output JS version (modern Node support)
         "lib": ["esnext"], // Available JS APIs (latest features)
         "types": ["node"], // Include Node.js global type definition ( npm install -D @types/node )

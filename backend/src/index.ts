@@ -3,12 +3,15 @@ import cors from "cors";
 import session from "cookie-session";
 import ms from "ms";
 import qs from "qs";
+import "dotenv/config";
 
 import type { Request, Response, NextFunction } from "express";
 
 import { config, runningOnProduction } from "./config/app.config.js";
 
 const app = express();
+let num: number = 15;
+num = "Manu";
 
 // Middleware: Parses JSON request bodies
 // - Applies only to Content-Type: application/json
@@ -65,3 +68,16 @@ app.use(
         sameSite: "lax",
     }),
 );
+
+// Server Home Route
+app.get("/", function (req: Request, res: Response, next: NextFunction): void {
+    res.status(200).json({
+        message: "Welcome To TaskOrbit Server.",
+    });
+    return;
+});
+
+// Starts HTTP server on configured PORT and logs environment details
+app.listen(config.PORT, async function () {
+    console.log(`Server is listening on port ${config.PORT} in ${config.NODE_ENV}`);
+});
