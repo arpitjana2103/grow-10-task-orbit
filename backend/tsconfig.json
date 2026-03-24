@@ -7,9 +7,11 @@
 
         // 🌍 Runtime & Module System
         "module": "NodeNext", // Enables Node.js ESM + CommonJS interop
+        "moduleResolution": "NodeNext", // Use Node.js-style module resolution (required for NodeNext)
         "target": "ES2021", // Output JS version (modern Node support)
         "lib": ["esnext"], // Available JS APIs (latest features)
         "types": ["node"], // Include Node.js global type definition ( npm install -D @types/node )
+        "esModuleInterop": true, // Enables clean default imports for CommonJS modules
 
         // 📦 Output Control
         "sourceMap": false, // Disable .map files (smaller build)

@@ -4,7 +4,11 @@ export const config = {
     NODE_ENV: getEnv("NODE_ENV", "development"),
     PORT: getEnv("PORT", "5000"),
     BASE_PATH: getEnv("BASE_PATH", "/api"),
-    MONGO_URI: getEnv("MONGO_URI", ""),
+    MONGO_LOC_URI: getEnv("MONGO_LOC_URI"),
+    MONGO_ATLAS_PASSWORD: getEnv("MONGO_ATLAS_PASSWORD"),
+    get_MONGO_ATLAS_URI: function (): string {
+        return getEnv("MONGO_ATLAS_URI").replace("<db_password>", this.MONGO_ATLAS_PASSWORD);
+    },
 
     SESSION_SECRET: getEnv("SESSION_SECRET"),
     SESSION_EXPIRES_IN: getEnv("SESSION_EXPIRES_IN"),

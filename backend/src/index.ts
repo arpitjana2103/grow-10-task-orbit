@@ -8,6 +8,7 @@ import "dotenv/config";
 import type { Request, Response, NextFunction } from "express";
 
 import { config, runningOnProduction } from "./config/app.config.js";
+import connectDatabase from "./config/database.config.js";
 
 const app = express();
 
@@ -77,5 +78,6 @@ app.get("/", function (req: Request, res: Response, next: NextFunction): void {
 
 // Starts HTTP server on configured PORT and logs environment details
 app.listen(config.PORT, async function () {
-    console.log(`Server is listening on port ${config.PORT} in ${config.NODE_ENV}`);
+    await connectDatabase("local");
+    console.log(`🛜 Server: http://localhost:${config.PORT} [env:${config.NODE_ENV}]`);
 });
