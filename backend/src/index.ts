@@ -9,6 +9,9 @@ import type { Request, Response, NextFunction } from "express";
 
 import { config, runningOnProduction } from "./config/app.config.js";
 import connectDatabase from "./config/database.config.js";
+import { AppError } from "./utils/app-error.js";
+import { handleAsyncError } from "./middlewares/async-handler.middleware.js";
+import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
 
 const app = express();
 
@@ -69,12 +72,23 @@ app.use(
 );
 
 // Server Home Route
-app.get("/", function (req: Request, res: Response, next: NextFunction): void {
-    res.status(200).json({
-        message: "Welcome To TaskOrbit Server.",
-    });
-    return;
-});
+app.get(
+    "/",
+    handleAsyncError(async function (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
+        res.status(200).json({
+            message: "Welcome To TaskOrbit Server.",
+        });
+        return;
+    }),
+);
+
+// Middleware: Global error handler with env-based responses
+// - Routes errors to dev or prod handlers based on environment
+app.use(handleGlobalError);
 
 // Starts HTTP server on configured PORT and logs environment details
 app.listen(config.PORT, async function () {

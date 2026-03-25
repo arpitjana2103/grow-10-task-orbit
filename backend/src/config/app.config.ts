@@ -24,3 +24,7 @@ export const config = {
 export const runningOnProduction = function (): boolean {
     return config.NODE_ENV === "production";
 };
+
+export const runningOnDevelopment = function (): boolean {
+    return config.NODE_ENV === "development";
+};
