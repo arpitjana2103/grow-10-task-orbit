@@ -1,17 +1,17 @@
 import type { T_HttpStatusCode } from "../config/http.config.js";
-import { ErrorCodeEnum, type T_ErrorCode } from "../enums/error-code.enum.js";
+import { ErrorCodeEnum, type T_ErrorCodeEnum } from "../enums/error-code.enum.js";
 
 // Class: Custom application error
 // - Extends native Error with statusCode and errorCode
 // - Used for operational/expected errors across app
 export class AppError extends Error {
     readonly statusCode: T_HttpStatusCode;
-    readonly errorCode: T_ErrorCode;
+    readonly errorCode: T_ErrorCodeEnum;
 
     constructor(
         message: string,
         statusCode: T_HttpStatusCode,
-        errorCode: T_ErrorCode = ErrorCodeEnum.UNKNOWN_ERROR,
+        errorCode: T_ErrorCodeEnum = ErrorCodeEnum.UNKNOWN_ERROR,
     ) {
         super(message);
         this.statusCode = statusCode;
