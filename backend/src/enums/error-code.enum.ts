@@ -60,4 +60,4 @@ export const ErrorCodeEnum = {
     UNKNOWN_ERROR: "UNKNOWN_ERROR",
 } as const;
 
-export type TErrorCode = (typeof ErrorCodeEnum)[keyof typeof ErrorCodeEnum];
+export type T_ErrorCode = (typeof ErrorCodeEnum)[keyof typeof ErrorCodeEnum];

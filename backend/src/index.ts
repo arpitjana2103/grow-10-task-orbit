@@ -12,6 +12,7 @@ import connectDatabase from "./config/database.config.js";
 import { AppError } from "./utils/app-error.js";
 import { handleAsyncError } from "./middlewares/async-handler.middleware.js";
 import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
+import { HTTPSTATUSCODE } from "./config/http.config.js";
 
 const app = express();
 
@@ -79,7 +80,7 @@ app.get(
         res: Response,
         next: NextFunction,
     ): Promise<void> {
-        res.status(200).json({
+        res.status(HTTPSTATUSCODE.OK).json({
             message: "Welcome To TaskOrbit Server.",
         });
         return;

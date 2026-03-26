@@ -24,4 +24,4 @@ export const HTTPSTATUSCODE = {
     GATEWAY_TIMEOUT: 504,
 } as const;
 
-export type THttpStatusCode = (typeof HTTPSTATUSCODE)[keyof typeof HTTPSTATUSCODE];
+export type T_HttpStatusCode = (typeof HTTPSTATUSCODE)[keyof typeof HTTPSTATUSCODE];
