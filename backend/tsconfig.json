@@ -1,5 +1,4 @@
 {
-    // Visit https://aka.ms/tsconfig to read more about this file
     "compilerOptions": {
         // 📁 Project Structure
         "rootDir": "./src", // Source code location (input folder)
@@ -8,13 +7,20 @@
         // 🌍 Runtime & Module System
         "module": "NodeNext", // Enables Node.js ESM + CommonJS interop
         "moduleResolution": "NodeNext", // Use Node.js-style module resolution (required for NodeNext)
-        "target": "ES2021", // Output JS version (modern Node support)
-        "lib": ["esnext"], // Available JS APIs (latest features)
-        "types": ["node"], // Include Node.js global type definition ( npm install -D @types/node )
+        "target": "ES2022", // Output JS version (Node 18+ supports ES2022 natively)
+        "lib": ["ES2022"], // Available JS APIs (aligned with target)
         "esModuleInterop": true, // Enables clean default imports for CommonJS modules
 
+        // 🔗 Path & Types
+        "types": ["node"], // Include Node.js global type definitions ( npm i -D @types/node )
+        "typeRoots": [
+            // Lookup paths for type definitions
+            "./node_modules/@types", // Standard @types packages
+            "./src/@types", // Custom local type declarations
+        ],
+
         // 📦 Output Control
-        "sourceMap": false, // Disable .map files (smaller build)
+        "sourceMap": true, // Enable .map files (accurate stack traces in dev & prod)
         "declaration": false, // Do not generate .d.ts files
         "declarationMap": false, // Disable mapping for declarations
 
@@ -22,23 +28,28 @@
         "strict": true, // Enable all strict type-checking rules
         "noUncheckedIndexedAccess": true, // Adds undefined to unsafe index access
         "exactOptionalPropertyTypes": true, // Optional props are strictly enforced
+        "noImplicitOverride": true, // Catches missing override keyword in subclasses
+        "noPropertyAccessFromIndexSignature": true, // Forces bracket notation on index-typed properties
 
         // ⚙️ Module Behavior (Important for ESM)
         "verbatimModuleSyntax": true, // Keeps imports exactly as written (no rewriting)
-        "isolatedModules": true, // Ensures each file compiles independently
-        "moduleDetection": "force", // Treat all files as modules (no script mode)
+        "isolatedModules": true, // Ensures each file compiles independently (required for tsx)
+        "moduleDetection": "force", // Treat all files as modules (no accidental script mode)
 
         // 🚨 Code Safety
         "noUncheckedSideEffectImports": true, // Warn on imports with hidden side effects
+        "noFallthroughCasesInSwitch": true, // Catches missing break/return in switch cases
+        "forceConsistentCasingInFileNames": true, // Prevents casing mismatch bugs on Linux/CI
 
         // ⚡ Performance
         "skipLibCheck": true, // Skip type checking of node_modules (faster builds)
+        "incremental": true, // Cache build info for faster subsequent type checks
+        "tsBuildInfoFile": ".tsbuildinfo", // Location of incremental build cache file
     },
 
     // 📂 File Inclusion
     "include": [
         "src/**/*.ts", // Include all TS files in src
-        "@types", // Include custom type definitions
     ],
 
     // 🚫 File Exclusion
@@ -46,6 +57,7 @@
         "node_modules", // Ignore dependencies
         "dist", // Ignore build output
         "test", // Ignore test folder
-        "**/*spec.ts", // Ignore test files
+        "**/*.spec.ts", // Ignore spec test files
+        "**/*.test.ts", // Ignore unit test files
     ],
 }
