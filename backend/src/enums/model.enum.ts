@@ -4,6 +4,8 @@ export const ModelEnum = {
     TASK: "Task",
     USER: "User",
     WORKSPACE: "Workspace",
+    MEMBER: "Member",
+    ROLE: "Role",
 } as const;
 
 export type T_ModelEnum = (typeof ModelEnum)[keyof typeof ModelEnum];

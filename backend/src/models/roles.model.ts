@@ -3,6 +3,7 @@ import type { Document } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
 
+import { ModelEnum } from "../enums/model.enum.js";
 import { PermissionEnum, RoleEnum } from "../enums/role.enum.js";
 import { RolePermissions } from "../utils/role-permission.js";
 
@@ -32,5 +33,5 @@ const roleSchema = new Schema<RoleDocument>(
     },
 );
 
-const RoleModel = mongoose.model<RoleDocument>("Role", roleSchema);
+const RoleModel = mongoose.model<RoleDocument>(ModelEnum.ROLE, roleSchema);
 export default RoleModel;
