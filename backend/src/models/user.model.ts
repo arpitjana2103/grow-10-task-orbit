@@ -1,5 +1,5 @@
 import mongoose, { Schema as MongooseSchema, type Document } from "mongoose";
-import { bcryptHash } from "../utils/bcrypt.js";
+import { bcryptCompare, bcryptHash } from "../utils/bcrypt.js";
 
 export interface UserDocument extends Document {
     name: string;
@@ -44,10 +44,14 @@ const userSchema = new MongooseSchema<UserDocument>(
     {
         timestamps: true,
         methods: {
-            omitPassword(this: UserDocument): Omit<UserDocument, "password"> {
+            omitPassword: function (): Omit<UserDocument, "password"> {
                 const userObject = this.toObject();
                 delete userObject.password;
                 return userObject;
+            },
+            comparePassword: async function (value: string): Promise<boolean> {
+                if (!this.password) return false;
+                return bcryptCompare(value, this.password);
             },
         },
     },
