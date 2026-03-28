@@ -1,5 +1,7 @@
 import type { T_HttpStatusCode } from "../config/http.config.js";
-import { ErrorCodeEnum, type T_ErrorCodeEnum } from "../enums/error-code.enum.js";
+import type { T_ErrorCodeEnum } from "../enums/error-code.enum.js";
+
+import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 
 // Class: Custom application error
 // - Extends native Error with statusCode and errorCode

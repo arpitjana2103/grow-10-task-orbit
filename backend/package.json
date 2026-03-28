@@ -20,7 +20,11 @@
         "start:prod": "cross-env NODE_ENV=production node dist/index.js",
         "build": "rimraf dist && tsc",
         "typecheck": "tsc --noEmit",
-        "typecheck:watch": "tsc --noEmit --watch"
+        "typecheck:watch": "tsc --noEmit --watch",
+        "fmt": "oxfmt",
+        "fmt:check": "oxfmt --check",
+        "lint": "oxlint",
+        "lint:fix": "oxlint --fix"
     },
     "dependencies": {
         "bcrypt": "^6.0.0",

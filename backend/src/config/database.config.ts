@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import { config } from "./app.config.js";
 
 const connectDatabase = async function (type: "local" | "atlas"): Promise<void> {

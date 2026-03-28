@@ -1,18 +1,19 @@
-import express from "express";
-import cors from "cors";
-import session from "cookie-session";
-import ms from "ms";
-import qs from "qs";
 import "dotenv/config";
 
 import type { Request, Response, NextFunction } from "express";
 
+import session from "cookie-session";
+import cors from "cors";
+import express from "express";
+import ms from "ms";
+import qs from "qs";
+
 import { config, runningOnProduction } from "./config/app.config.js";
 import connectDatabase from "./config/database.config.js";
-import { AppError } from "./utils/app-error.js";
+import { HTTPSTATUSCODE } from "./config/http.config.js";
 import { handleAsyncError } from "./middlewares/async-handler.middleware.js";
 import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
-import { HTTPSTATUSCODE } from "./config/http.config.js";
+import { AppError } from "./utils/app-error.js";
 
 const app = express();
 

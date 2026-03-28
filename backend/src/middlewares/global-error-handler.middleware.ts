@@ -1,6 +1,7 @@
 import type { ErrorRequestHandler, Response } from "express";
-import { HTTPSTATUSCODE } from "../config/http.config.js";
+
 import { runningOnDevelopment, runningOnProduction } from "../config/app.config.js";
+import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { AppError } from "../utils/app-error.js";
 
 // Middleware: Global error handler with env-based response strategy

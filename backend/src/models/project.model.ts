@@ -1,4 +1,7 @@
-import mongoose, { Schema, type Document } from "mongoose";
+import type { Document } from "mongoose";
+
+import mongoose, { Schema } from "mongoose";
+
 import { ModelEnum } from "../enums/model.enum.js";
 
 export interface ProjectDocument extends Document {

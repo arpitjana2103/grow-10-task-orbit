@@ -1,4 +1,8 @@
-import mongoose, { Schema, type Document } from "mongoose";
+import type { Document } from "mongoose";
+
+import mongoose, { Schema } from "mongoose";
+
+import { ModelEnum } from "../enums/model.enum.js";
 import {
     TaskPriorityEnum,
     TaskStatusEnum,
@@ -6,7 +10,6 @@ import {
     type T_TaskStatusEnum,
 } from "../enums/task.enum.js";
 import { generateTaskCode } from "../utils/uuid.js";
-import { ModelEnum } from "../enums/model.enum.js";
 
 export interface TaskDocument extends Document {
     taskCode: string;
