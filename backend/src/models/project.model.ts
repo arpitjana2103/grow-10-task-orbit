@@ -1,4 +1,5 @@
 import mongoose, { Schema, type Document } from "mongoose";
+import { ModelEnum } from "../enums/model.enum.js";
 
 export interface ProjectDocument extends Document {
     name: string;
@@ -26,12 +27,12 @@ const projectSchema = new Schema<ProjectDocument>(
         description: { type: String, required: false },
         workspace: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Workspace",
+            ref: ModelEnum.WORKSPACE,
             required: true,
         },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: ModelEnum.USER,
             required: true,
         },
     },
@@ -40,6 +41,6 @@ const projectSchema = new Schema<ProjectDocument>(
     },
 );
 
-const ProjectModel = mongoose.model<ProjectDocument>("Project", projectSchema);
+const ProjectModel = mongoose.model<ProjectDocument>(ModelEnum.PROJECT, projectSchema);
 
 export default ProjectModel;

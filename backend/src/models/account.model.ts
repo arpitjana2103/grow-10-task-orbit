@@ -1,5 +1,6 @@
 import { AccountProviderEnum, type T_AccountProviderEnum } from "../enums/account-provider.enum.js";
 import mongoose, { Schema, type Document } from "mongoose";
+import { ModelEnum } from "../enums/model.enum.js";
 
 export interface AccountDocument extends Document {
     provider: T_AccountProviderEnum;
@@ -14,7 +15,7 @@ const accountSchema = new Schema<AccountDocument>(
     {
         userId: {
             type: Schema.Types.ObjectId,
-            ref: "User",
+            ref: ModelEnum.USER,
             required: true,
         },
         provider: {
@@ -40,5 +41,5 @@ const accountSchema = new Schema<AccountDocument>(
     },
 );
 
-const AccountModel = mongoose.model<AccountDocument>("Account", accountSchema);
+const AccountModel = mongoose.model<AccountDocument>(ModelEnum.ACCOUNT, accountSchema);
 export default AccountModel;

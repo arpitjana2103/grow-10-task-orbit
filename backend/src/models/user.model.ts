@@ -1,5 +1,6 @@
 import mongoose, { Schema as MongooseSchema, type Document } from "mongoose";
 import { bcryptCompare, bcryptHash } from "../utils/bcrypt.js";
+import { ModelEnum } from "../enums/model.enum.js";
 
 export interface UserDocument extends Document {
     name: string;
@@ -36,7 +37,7 @@ const userSchema = new MongooseSchema<UserDocument>(
         },
         currentWorkspace: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Workspace",
+            ref: ModelEnum.WORKSPACE,
         },
         isActive: { type: Boolean, default: true },
         lastLogin: { type: Date, default: null },
@@ -65,5 +66,5 @@ userSchema.pre("save", async function () {
     }
 });
 
-const UserModel = mongoose.model<UserDocument>("User", userSchema);
+const UserModel = mongoose.model<UserDocument>(ModelEnum.USER, userSchema);
 export default UserModel;

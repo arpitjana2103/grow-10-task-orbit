@@ -1,5 +1,6 @@
 import mongoose, { Schema, type Document } from "mongoose";
-import { generateInviteCode } from "../utils/generate-invitecode.js";
+import { generateInviteCode } from "../utils/uuid.js";
+import { ModelEnum } from "../enums/model.enum.js";
 
 export interface WorkspaceDocument extends Document {
     name: string;
@@ -16,7 +17,7 @@ const workspaceSchema = new Schema<WorkspaceDocument>(
         description: { type: String, required: false },
         owner: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: ModelEnum.USER,
             required: true,
         },
         inviteCode: {
@@ -36,6 +37,6 @@ const workspaceSchema = new Schema<WorkspaceDocument>(
     },
 );
 
-const WorkspaceModel = mongoose.model<WorkspaceDocument>("Workspace", workspaceSchema);
+const WorkspaceModel = mongoose.model<WorkspaceDocument>(ModelEnum.WORKSPACE, workspaceSchema);
 
 export default WorkspaceModel;
