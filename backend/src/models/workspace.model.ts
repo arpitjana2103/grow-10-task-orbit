@@ -1,4 +1,4 @@
-import type { Document } from "mongoose";
+import type { Document, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
 
@@ -8,7 +8,7 @@ import { generateInviteCode } from "../utils/uuid.js";
 export interface WorkspaceDocument extends Document {
     name: string;
     description: string;
-    owner: mongoose.Types.ObjectId;
+    owner: Types.ObjectId;
     inviteCode: string;
     createdAt: string;
     updatedAt: string;

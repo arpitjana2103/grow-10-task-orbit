@@ -1,4 +1,4 @@
-import type { Document } from "mongoose";
+import type { Document, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
 
@@ -8,8 +8,8 @@ export interface ProjectDocument extends Document {
     name: string;
     description: string | null;
     emoji: string;
-    workspace: mongoose.Types.ObjectId;
-    createdBy: mongoose.Types.ObjectId;
+    workspace: Types.ObjectId;
+    createdBy: Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }

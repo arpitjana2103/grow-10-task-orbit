@@ -1,4 +1,4 @@
-import type { Document } from "mongoose";
+import type { Document, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
 
@@ -15,12 +15,12 @@ export interface TaskDocument extends Document {
     taskCode: string;
     title: string;
     description: string | null;
-    project: mongoose.Types.ObjectId;
-    workspace: mongoose.Types.ObjectId;
+    project: Types.ObjectId;
+    workspace: Types.ObjectId;
     status: T_TaskStatusEnum;
     priority: T_TaskPriorityEnum;
-    assignedTo: mongoose.Types.ObjectId | null;
-    createdBy: mongoose.Types.ObjectId;
+    assignedTo: Types.ObjectId | null;
+    createdBy: Types.ObjectId;
     dueDate: Date | null;
     createdAt: Date;
     updatedAt: Date;

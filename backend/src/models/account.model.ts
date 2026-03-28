@@ -1,5 +1,5 @@
 import type { T_AccountProviderEnum } from "../enums/account-provider.enum.js";
-import type { Document } from "mongoose";
+import type { Document, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
 
@@ -9,7 +9,7 @@ import { ModelEnum } from "../enums/model.enum.js";
 export interface AccountDocument extends Document {
     provider: T_AccountProviderEnum;
     providerId: string;
-    userId: mongoose.Types.ObjectId;
+    userId: Types.ObjectId;
     refreshToken?: string | null;
     tokenExpiry: Date | null;
     createdAt: Date;

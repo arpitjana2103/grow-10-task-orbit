@@ -1,4 +1,4 @@
-import type { Document } from "mongoose";
+import type { Document, Types } from "mongoose";
 
 import mongoose, { Schema as MongooseSchema } from "mongoose";
 
@@ -14,7 +14,7 @@ export interface UserDocument extends Document {
     lastLogin: Date | null;
     createdAt: Date;
     updatedAt: Date;
-    currentWorkspace: mongoose.Types.ObjectId | null;
+    currentWorkspace: Types.ObjectId | null;
     comparePassword(value: string): Promise<boolean>;
     omitPassword(): Omit<UserDocument, "password">;
 }
