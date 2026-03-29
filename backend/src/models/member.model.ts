@@ -19,6 +19,11 @@ const memberSchema = new Schema<MemberDocument>(
             ref: ModelEnum.USER,
             required: true,
         },
+        workspaceId: {
+            type: Schema.Types.ObjectId,
+            ref: ModelEnum.WORKSPACE,
+            required: true,
+        },
         role: {
             type: Schema.Types.ObjectId,
             ref: ModelEnum.ROLE,
