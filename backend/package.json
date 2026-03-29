@@ -24,7 +24,8 @@
         "fmt": "oxfmt",
         "fmt:check": "oxfmt --check",
         "lint": "oxlint",
-        "lint:fix": "oxlint --fix"
+        "lint:fix": "oxlint --fix",
+        "seed:role": "tsx src/seeder/role.seeder.ts"
     },
     "dependencies": {
         "bcrypt": "^6.0.0",

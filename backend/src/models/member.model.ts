@@ -1,4 +1,4 @@
-import type { RoleDocument } from "./roles.model.js";
+import type { RoleDocument } from "./role.model.js";
 import type { Document, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";

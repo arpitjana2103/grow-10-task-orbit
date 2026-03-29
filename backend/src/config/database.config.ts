@@ -11,8 +11,12 @@ const connectDatabase = async function (type: "local" | "atlas"): Promise<void> 
         console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
         console.log(`📂 Database Name: ${conn.connection.name}`);
     } catch (error) {
-        console.log("❌ Database Connection Failed.");
-        console.log(error);
+        console.log("⛔ Database Connection Failed.");
+        if (error instanceof Error) {
+            console.log(error.message);
+        } else {
+            console.log(error);
+        }
 
         // Graceful shutdown
         await mongoose.connection.close();
