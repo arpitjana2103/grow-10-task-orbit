@@ -26,7 +26,7 @@ export const handleGlobalError: ErrorRequestHandler = function (err: unknown, _r
 // - Sends detailed error response (message, stack, errorCode) while env is "development"
 function sendErrForDev(err: unknown, res: Response): void {
     if (err instanceof AppError) {
-        logger.error({ error: err }, err.internalMessage || err.message);
+        logger.error({ err: err }, err.internalMessage || err.message);
 
         res.status(err.statusCode).json({
             env: "development",
@@ -37,7 +37,7 @@ function sendErrForDev(err: unknown, res: Response): void {
             stack: err.stack,
         });
     } else {
-        logger.error({ error: err });
+        logger.error({ err: err });
 
         res.status(HTTPSTATUSCODE.INTERNAL_SERVER_ERROR).json({
             env: "development",
@@ -51,7 +51,7 @@ function sendErrForDev(err: unknown, res: Response): void {
 // - Sends sanitized error response (no stack) while env is "production"
 function sendErrForProd(err: unknown, res: Response): void {
     if (err instanceof AppError && err.isOperational) {
-        logger.error({ error: err }, err.internalMessage || err.message);
+        logger.error({ err: err }, err.internalMessage || err.message);
 
         res.status(err.statusCode).json({
             env: "production",
@@ -60,7 +60,7 @@ function sendErrForProd(err: unknown, res: Response): void {
             errorCode: err.errorCode,
         });
     } else {
-        logger.error({ error: err });
+        logger.error({ err: err });
 
         res.status(HTTPSTATUSCODE.INTERNAL_SERVER_ERROR).json({
             env: "production",
