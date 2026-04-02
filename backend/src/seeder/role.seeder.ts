@@ -5,6 +5,7 @@ import type { T_RoleEnum } from "../enums/role.enum.js";
 import mongoose from "mongoose";
 
 import connectDatabase from "../config/database.config.js";
+import { logger } from "../config/logger.config.js";
 import RoleModel from "../models/role.model.js";
 import { RolePermissions } from "../utils/role-permission.js";
 
@@ -33,9 +34,9 @@ const seedRoles = async function (): Promise<void> {
 
         await session.commitTransaction();
 
-        console.log("🌱 Role Seeding Completed");
+        logger.info("Role Seeding Completed");
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error }, "Role Seeding Error");
         await session.abortTransaction();
     } finally {
         session.endSession();
