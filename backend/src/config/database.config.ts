@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import { config } from "./app.config.js";
+import { logger } from "./logger.config.js";
 
 const connectDatabase = async function (type: "local" | "atlas"): Promise<void> {
     try {
@@ -11,12 +12,7 @@ const connectDatabase = async function (type: "local" | "atlas"): Promise<void> 
         console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
         console.log(`📂 Database Name: ${conn.connection.name}`);
     } catch (error) {
-        console.log("⛔ Database Connection Failed.");
-        if (error instanceof Error) {
-            console.log(error.message);
-        } else {
-            console.log(error);
-        }
+        logger.fatal({ err: error }, "Database Connection Failed");
 
         // Graceful shutdown
         await mongoose.connection.close();
