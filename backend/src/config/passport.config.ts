@@ -8,8 +8,8 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import { AccountProviderEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import UserModel from "../models/user.model.js";
-import { loginOrCreateAccountService } from "../services/auth.service.js";
-import { AppError } from "../utils/app-error.js";
+import { ensureUser } from "../services/auth.service.js";
+import { AppError } from "../utils/app-error.util.js";
 import { config } from "./app.config.js";
 import { HTTPSTATUSCODE } from "./http.config.js";
 import { logger } from "./logger.config.js";
@@ -45,9 +45,9 @@ passport.use(
                         errorCode: ErrorCodeEnum.AUTH_NOT_FOUND,
                     });
 
-                const user = await loginOrCreateAccountService({
+                const user = await ensureUser({
                     provider: AccountProviderEnum.GOOGLE,
-                    displayName: profile.displayName,
+                    name: profile.displayName,
                     providerId: googleId,
                     picture: picture,
                     email: email,

@@ -12,17 +12,17 @@ import MemberModel from "../models/member.model.js";
 import RoleModel from "../models/role.model.js";
 import UserModel, { type UserDocument } from "../models/user.model.js";
 import WorkspaceModel from "../models/workspace.model.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../utils/app-error.util.js";
+import { getErrorMessage } from "../utils/error.util.js";
 
-export const loginOrCreateAccountService = async function (data: {
+export const ensureUser = async function (data: {
     provider: T_AccountProviderEnum;
-    displayName: string;
+    name: string;
     providerId: string;
     picture?: string;
     email: string;
 }): Promise<HydratedDocument<UserDocument> | null> {
-    const { provider, displayName, providerId, picture, email } = data;
-
+    const { provider, name, providerId, picture, email } = data;
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
@@ -32,7 +32,7 @@ export const loginOrCreateAccountService = async function (data: {
             // 1. Create User
             user = new UserModel({
                 email: email,
-                name: displayName,
+                name: name,
                 profilePicture: picture || null,
             });
             await user.save({ session });
@@ -85,6 +85,7 @@ export const loginOrCreateAccountService = async function (data: {
         await session.abortTransaction();
         throw new AppError({
             publicMessage: "User sign-in/up failed",
+            internalMessage: getErrorMessage(error),
             statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
             errorCode: ErrorCodeEnum.INTERNAL_SERVER_ERROR,
         });
