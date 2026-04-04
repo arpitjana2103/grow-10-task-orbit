@@ -4,6 +4,7 @@ import { runningOnDevelopment, runningOnProduction } from "../config/app.config.
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
 import { AppError } from "../utils/app-error.util.js";
+import { sendResponse } from "../utils/response.util.js";
 
 // Middleware: Global error handler with env-based response strategy
 // - Routes errors to dev/prod handlers based on runtime environment
@@ -16,7 +17,8 @@ export const handleGlobalError: ErrorRequestHandler = function (err: unknown, _r
         return sendErrForProd(err, res);
     }
 
-    res.status(HTTPSTATUSCODE.INTERNAL_SERVER_ERROR).json({
+    sendResponse(res, {
+        statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
         status: "error",
         message: "Something went wrong.",
     });
@@ -28,18 +30,19 @@ function sendErrForDev(err: unknown, res: Response): void {
     if (err instanceof AppError) {
         logger.error({ err: err }, err.internalMessage || err.publicMessage);
 
-        res.status(err.statusCode).json({
-            env: "development",
+        sendResponse(res, {
+            statusCode: err.statusCode,
             status: "error",
             message: err.publicMessage,
-            internalMessage: err.internalMessage,
             errorCode: err.errorCode,
             stack: err.stack,
+            ...(err.internalMessage && { internalMessage: err.internalMessage }),
         });
     } else {
         logger.error({ err: err });
 
-        res.status(HTTPSTATUSCODE.INTERNAL_SERVER_ERROR).json({
+        sendResponse(res, {
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
             env: "development",
             status: "error",
             error: err instanceof Error ? { message: err.message, stack: err.stack } : err,
@@ -53,8 +56,9 @@ function sendErrForProd(err: unknown, res: Response): void {
     if (err instanceof AppError && err.isOperational) {
         logger.error({ err: err }, err.internalMessage || err.publicMessage);
 
-        res.status(err.statusCode).json({
+        sendResponse(res, {
             env: "production",
+            statusCode: err.statusCode,
             status: "error",
             message: err.publicMessage,
             errorCode: err.errorCode,
@@ -62,8 +66,9 @@ function sendErrForProd(err: unknown, res: Response): void {
     } else {
         logger.error({ err: err });
 
-        res.status(HTTPSTATUSCODE.INTERNAL_SERVER_ERROR).json({
+        sendResponse(res, {
             env: "production",
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
             status: "error",
             message: "Something went wrong",
         });
