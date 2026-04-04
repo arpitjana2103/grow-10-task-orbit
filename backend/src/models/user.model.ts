@@ -15,6 +15,7 @@ export interface UserDocument extends Document {
     createdAt: Date;
     updatedAt: Date;
     currentWorkspace: Types.ObjectId | null;
+    emailVerified: boolean;
     comparePassword(value: string): Promise<boolean>;
     omitPassword(): Omit<UserDocument, "password">;
 }
@@ -42,6 +43,7 @@ const userSchema = new MongooseSchema<UserDocument>(
             type: mongoose.Schema.Types.ObjectId,
             ref: ModelEnum.WORKSPACE,
         },
+        emailVerified: { type: Boolean, default: false },
         isActive: { type: Boolean, default: true },
         lastLogin: { type: Date, default: null },
     },

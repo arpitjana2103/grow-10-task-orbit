@@ -1,10 +1,10 @@
-import type { T_AccountProviderEnum } from "../enums/account-provider.enum.js";
 import type { HydratedDocument } from "mongoose";
 
 import mongoose from "mongoose";
 
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
+import { AccountProviderEnum, type T_AccountProviderEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { RoleEnum } from "../enums/role.enum.js";
 import AccountModel from "../models/account.model.js";
@@ -34,6 +34,7 @@ export const ensureUser = async function (data: {
                 email: email,
                 name: name,
                 profilePicture: picture || null,
+                emailVerified: provider === AccountProviderEnum.GOOGLE,
             });
             await user.save({ session });
 
