@@ -8,10 +8,6 @@ const authRoutes = Router();
 
 // auth/google
 authRoutes.route("/google").get(
-    function (req, res, next) {
-        console.log("Hello from /google controller");
-        next();
-    },
     passport.authenticate("google", {
         scope: ["profile", "email"],
     }),

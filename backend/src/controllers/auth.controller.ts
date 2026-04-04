@@ -10,10 +10,6 @@ export const handleGoogleAuthSuccess = handleAsyncError(async function (
 ) {
     const currentWorkspaceId = req.user?.currentWorkspace;
     // Handle User with no currentWorkspace
-    //
-    logger.info(req.user?.name);
-    logger.info(req.session);
-    logger.info(req.isAuthenticated());
 
     return res.redirect(`${config.FRONTEND_ORIGIN}/workspace/${currentWorkspaceId}`);
 });

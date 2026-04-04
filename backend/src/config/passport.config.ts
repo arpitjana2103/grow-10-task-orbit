@@ -14,7 +14,6 @@ import { config } from "./app.config.js";
 import { HTTPSTATUSCODE } from "./http.config.js";
 import { logger } from "./logger.config.js";
 
-console.log("Hello World from passport.config.ts");
 logger.info(config.get_BACKEND_GOOGLE_CALLBACK_URL());
 
 passport.use(
