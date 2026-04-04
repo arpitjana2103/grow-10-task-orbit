@@ -15,10 +15,22 @@ export const config = {
 
     GOOGLE_CLIENT_ID: getEnv("GOOGLE_CLIENT_ID"),
     GOOGLE_CLIENT_SECRET: getEnv("GOOGLE_CLIENT_SECRET"),
-    GOOGLE_CALLBACK_URL: getEnv("GOOGLE_CALLBACK_URL"),
+
+    BACKEND_ORIGIN: getEnv("BACKEND_ORIGIN"),
+    get_BACKEND_GOOGLE_CALLBACK_URL: function (): string {
+        return getEnv("BACKEND_GOOGLE_CALLBACK_URL").replace(
+            "<backend_origin>",
+            this.BACKEND_ORIGIN,
+        );
+    },
 
     FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN"),
-    FRONTEND_GOOGLE_CALLBACK_URL: getEnv("FRONTEND_GOOGLE_CALLBACK_URL"),
+    get_FRONTEND_GOOGLE_CALLBACK_URL: function (): string {
+        return getEnv("FRONTEND_GOOGLE_CALLBACK_URL").replace(
+            "<frontend_origin>",
+            this.FRONTEND_ORIGIN,
+        );
+    },
 };
 
 export const runningOnProduction = function (): boolean {
