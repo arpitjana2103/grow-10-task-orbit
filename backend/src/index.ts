@@ -17,7 +17,6 @@ import { HTTPSTATUSCODE } from "./config/http.config.js";
 import { handleAsyncError } from "./middlewares/async-handler.middleware.js";
 import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
 import authRoutes from "./routes/auth.route.js";
-import { AppError } from "./utils/app-error.util.js";
 
 const app = express();
 

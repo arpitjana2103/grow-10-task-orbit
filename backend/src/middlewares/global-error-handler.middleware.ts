@@ -1,14 +1,28 @@
 import type { ErrorRequestHandler, Response } from "express";
 
+import { ZodError } from "zod";
+
 import { runningOnDevelopment, runningOnProduction } from "../config/app.config.js";
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
-import { AppError } from "../utils/app-error.util.js";
+import { ErrorCodeEnum } from "../enums/error-code.enum.js";
+import { AppError } from "../utils/errors/app-error.util.js";
+import { formatZodError } from "../utils/errors/format-zod-error.util.js";
 import { sendResponse } from "../utils/response.util.js";
 
 // Middleware: Global error handler with env-based response strategy
 // - Routes errors to dev/prod handlers based on runtime environment
 export const handleGlobalError: ErrorRequestHandler = function (err: unknown, _req, res, _next) {
+    if (err instanceof ZodError) {
+        return sendResponse(res, {
+            statusCode: HTTPSTATUSCODE.BAD_REQUEST,
+            status: "fail",
+            errorCode: ErrorCodeEnum.INVALID_INPUT,
+            message: "Validation failed",
+            data: formatZodError(err),
+        });
+    }
+
     if (runningOnDevelopment()) {
         return sendErrForDev(err, res);
     }
@@ -17,7 +31,7 @@ export const handleGlobalError: ErrorRequestHandler = function (err: unknown, _r
         return sendErrForProd(err, res);
     }
 
-    sendResponse(res, {
+    return sendResponse(res, {
         statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
         status: "error",
         message: "Something went wrong.",
@@ -34,9 +48,9 @@ function sendErrForDev(err: unknown, res: Response): void {
             statusCode: err.statusCode,
             status: "error",
             message: err.publicMessage,
-            errorCode: err.errorCode,
             stack: err.stack,
             ...(err.internalMessage && { internalMessage: err.internalMessage }),
+            ...(err.errorCode && { errorCode: err.errorCode }),
         });
     } else {
         logger.error({ err: err });
@@ -53,7 +67,7 @@ function sendErrForDev(err: unknown, res: Response): void {
 // Helper: Production error formatter
 // - Sends sanitized error response (no stack) while env is "production"
 function sendErrForProd(err: unknown, res: Response): void {
-    if (err instanceof AppError && err.isOperational) {
+    if (err instanceof AppError) {
         logger.error({ err: err }, err.internalMessage || err.publicMessage);
 
         sendResponse(res, {
@@ -61,7 +75,7 @@ function sendErrForProd(err: unknown, res: Response): void {
             statusCode: err.statusCode,
             status: "error",
             message: err.publicMessage,
-            errorCode: err.errorCode,
+            ...(err.errorCode && { errorCode: err.errorCode }),
         });
     } else {
         logger.error({ err: err });

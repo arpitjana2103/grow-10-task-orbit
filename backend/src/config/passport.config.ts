@@ -9,12 +9,10 @@ import { AccountProviderEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import UserModel from "../models/user.model.js";
 import { ensureUser } from "../services/auth.service.js";
-import { AppError } from "../utils/app-error.util.js";
+import { AppError } from "../utils/errors/app-error.util.js";
 import { config } from "./app.config.js";
 import { HTTPSTATUSCODE } from "./http.config.js";
 import { logger } from "./logger.config.js";
-
-logger.info(config.get_BACKEND_GOOGLE_CALLBACK_URL());
 
 passport.use(
     new GoogleStrategy(

@@ -1,7 +1,7 @@
-import type { T_HttpStatusCode } from "../config/http.config.js";
-import type { T_ErrorCodeEnum } from "../enums/error-code.enum.js";
+import type { T_HttpStatusCode } from "../../config/http.config.js";
+import type { T_ErrorCodeEnum } from "../../enums/error-code.enum.js";
 
-import { ErrorCodeEnum } from "../enums/error-code.enum.js";
+import { ErrorCodeEnum } from "../../enums/error-code.enum.js";
 
 type AppErrorOptions = {
     publicMessage: string;
@@ -12,11 +12,10 @@ type AppErrorOptions = {
 
 export class AppError extends Error {
     readonly statusCode: T_HttpStatusCode;
-    readonly errorCode: T_ErrorCodeEnum;
+    readonly errorCode?: T_ErrorCodeEnum;
 
     readonly publicMessage: string;
     readonly internalMessage?: string | undefined;
-    readonly isOperational: boolean;
 
     constructor({
         publicMessage,
@@ -31,8 +30,6 @@ export class AppError extends Error {
 
         this.publicMessage = publicMessage;
         this.internalMessage = internalMessage;
-
-        this.isOperational = true;
 
         Error.captureStackTrace(this, this.constructor);
         /*
