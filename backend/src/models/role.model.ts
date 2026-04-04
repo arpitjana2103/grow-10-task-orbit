@@ -5,7 +5,7 @@ import mongoose, { Schema } from "mongoose";
 
 import { ModelEnum } from "../enums/model.enum.js";
 import { PermissionEnum, RoleEnum } from "../enums/role.enum.js";
-import { RolePermissions } from "../utils/role-permission.js";
+import { RolePermissions } from "../utils/role-permission.util.js";
 
 export interface RoleDocument extends Document {
     name: T_RoleEnum;

@@ -20,7 +20,7 @@ export class AppError extends Error {
 
     constructor({
         publicMessage,
-        internalMessage,
+        internalMessage = undefined,
         statusCode,
         errorCode = ErrorCodeEnum.UNKNOWN_ERROR,
     }: AppErrorOptions) {

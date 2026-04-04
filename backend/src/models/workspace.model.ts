@@ -3,7 +3,7 @@ import type { Document, Types } from "mongoose";
 import mongoose, { Schema } from "mongoose";
 
 import { ModelEnum } from "../enums/model.enum.js";
-import { generateInviteCode } from "../utils/uuid.js";
+import { generateInviteCode } from "../utils/uuid.util.js";
 
 export interface WorkspaceDocument extends Document {
     name: string;

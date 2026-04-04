@@ -3,7 +3,7 @@ import type { Document, Types } from "mongoose";
 import mongoose, { Schema as MongooseSchema } from "mongoose";
 
 import { ModelEnum } from "../enums/model.enum.js";
-import { bcryptCompare, bcryptHash } from "../utils/bcrypt.js";
+import { bcryptCompare, bcryptHash } from "../utils/bcrypt.util.js";
 
 export interface UserDocument extends Document {
     name: string;

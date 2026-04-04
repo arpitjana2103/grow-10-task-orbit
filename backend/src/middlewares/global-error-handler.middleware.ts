@@ -3,7 +3,7 @@ import type { ErrorRequestHandler, Response } from "express";
 import { runningOnDevelopment, runningOnProduction } from "../config/app.config.js";
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../utils/app-error.util.js";
 
 // Middleware: Global error handler with env-based response strategy
 // - Routes errors to dev/prod handlers based on runtime environment
@@ -26,7 +26,7 @@ export const handleGlobalError: ErrorRequestHandler = function (err: unknown, _r
 // - Sends detailed error response (message, stack, errorCode) while env is "development"
 function sendErrForDev(err: unknown, res: Response): void {
     if (err instanceof AppError) {
-        logger.error({ err: err }, err.internalMessage || err.message);
+        logger.error({ err: err }, err.internalMessage || err.publicMessage);
 
         res.status(err.statusCode).json({
             env: "development",
@@ -51,7 +51,7 @@ function sendErrForDev(err: unknown, res: Response): void {
 // - Sends sanitized error response (no stack) while env is "production"
 function sendErrForProd(err: unknown, res: Response): void {
     if (err instanceof AppError && err.isOperational) {
-        logger.error({ err: err }, err.internalMessage || err.message);
+        logger.error({ err: err }, err.internalMessage || err.publicMessage);
 
         res.status(err.statusCode).json({
             env: "production",

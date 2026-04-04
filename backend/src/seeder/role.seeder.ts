@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import connectDatabase from "../config/database.config.js";
 import { logger } from "../config/logger.config.js";
 import RoleModel from "../models/role.model.js";
-import { RolePermissions } from "../utils/role-permission.js";
+import { RolePermissions } from "../utils/role-permission.util.js";
 
 const seedRoles = async function (): Promise<void> {
     await connectDatabase("local");

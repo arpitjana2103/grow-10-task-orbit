@@ -9,7 +9,7 @@ import {
     type T_TaskPriorityEnum,
     type T_TaskStatusEnum,
 } from "../enums/task.enum.js";
-import { generateTaskCode } from "../utils/uuid.js";
+import { generateTaskCode } from "../utils/uuid.util.js";
 
 export interface TaskDocument extends Document {
     taskCode: string;
