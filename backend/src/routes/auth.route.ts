@@ -2,7 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 
 import { config } from "../config/app.config.js";
-import { handleGoogleAuthSuccess } from "../controllers/auth.controller.js";
+import { handleGoogleAuthSuccess, registerUser } from "../controllers/auth.controller.js";
 
 const authRoutes = Router();
 
@@ -174,37 +174,7 @@ authRoutes.route("/google/callback").get(
     */
 );
 
-/*
-Step 15: Next Request (deserializeUser)
-
-    - Browser automatically sends cookie:
-        Cookie: to-session=SESSION_ID
-
-    - express-session middleware:
-        - Reads SESSION_ID from cookie
-        - Looks up session in store (Memory / Redis)
-        - Attaches to req.session
-
-        req.session = {
-            passport: { user: "USER_ID" }
-        }
-
-    - passport.session():
-        - Extracts: req.session.passport.user
-        - Calls: deserializeUser(USER_ID, done)
-
-    - deserializeUser():
-        - Fetch user from DB
-        - done(null, user)
-
-    - Passport attaches:
-        req.user = user
-
-    - Authenticated Controller have -
-            - req.user              // ✅ full user
-            - req.isAuthenticated() // ✅ true
-            - req.session           // ✅ contains passport.user (USER_ID)
-*/
+authRoutes.route("/register").post(registerUser);
 
 // app.post("/logout", (req, res, next) => {
 //   req.logout(function (err) {

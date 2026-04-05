@@ -25,8 +25,8 @@ export function sendResponse(
     return res.status(statusCode).json({
         success: status === "success",
         status: status,
-        ...(message && { message: message }),
-        ...(internalMessage && { internalMessage: internalMessage }),
+        ...(message && { message: message.toLowerCase() }),
+        ...(internalMessage && { internalMessage: internalMessage.toLowerCase() }),
         ...(env && { env: env }),
         ...(data && { data }),
         ...(error && { error }),

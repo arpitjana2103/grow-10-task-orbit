@@ -12,8 +12,8 @@ import MemberModel from "../models/member.model.js";
 import RoleModel from "../models/role.model.js";
 import UserModel, { type UserDocument } from "../models/user.model.js";
 import WorkspaceModel from "../models/workspace.model.js";
-import { AppError } from "../utils/app-error.util.js";
 import { getErrorMessage } from "../utils/error.util.js";
+import { AppError } from "../utils/errors/app-error.util.js";
 
 export const ensureUser = async function (data: {
     provider: T_AccountProviderEnum;
@@ -21,8 +21,9 @@ export const ensureUser = async function (data: {
     providerId: string;
     picture?: string;
     email: string;
-}): Promise<HydratedDocument<UserDocument> | null> {
-    const { provider, name, providerId, picture, email } = data;
+    password?: string;
+}): Promise<HydratedDocument<UserDocument>> {
+    const { provider, name, providerId, picture, email, password } = data;
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
@@ -30,9 +31,18 @@ export const ensureUser = async function (data: {
 
         if (!user) {
             // 1. Create User
+            if (provider === AccountProviderEnum.EMAIL && !password) {
+                throw new AppError({
+                    publicMessage: "Password is required for email authentication",
+                    internalMessage: "Missing password for EMAIL provider during user creation",
+                    statusCode: HTTPSTATUSCODE.BAD_REQUEST,
+                    errorCode: ErrorCodeEnum.MISSING_REQUIRED_FIELD,
+                });
+            }
             user = new UserModel({
                 email: email,
                 name: name,
+                password: password,
                 profilePicture: picture || null,
                 emailVerified: provider === AccountProviderEnum.GOOGLE,
             });
