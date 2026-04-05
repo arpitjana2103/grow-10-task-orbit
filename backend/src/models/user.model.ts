@@ -5,10 +5,10 @@ import mongoose, { Schema as MongooseSchema } from "mongoose";
 import { ModelEnum } from "../enums/model.enum.js";
 import { bcryptCompare, bcryptHash } from "../utils/bcrypt.util.js";
 
-export interface UserDocument extends Document {
+type UserProps = {
     name: string;
     email: string;
-    password?: string;
+    password: string | null;
     profilePicture: string | null;
     isActive: boolean;
     lastLogin: Date | null;
@@ -16,8 +16,11 @@ export interface UserDocument extends Document {
     updatedAt: Date;
     currentWorkspace: Types.ObjectId | null;
     emailVerified: boolean;
+};
+
+export interface UserDocument extends Document, UserProps {
     comparePassword(value: string): Promise<boolean>;
-    omitPassword(): Omit<UserDocument, "password">;
+    omitPassword(): Omit<UserProps, "password">;
 }
 
 const userSchema = new MongooseSchema<UserDocument>(
@@ -50,10 +53,9 @@ const userSchema = new MongooseSchema<UserDocument>(
     {
         timestamps: true,
         methods: {
-            omitPassword: function (): Omit<UserDocument, "password"> {
-                const userObject = this.toObject();
-                delete userObject.password;
-                return userObject;
+            omitPassword: function (): Omit<UserProps, "password"> {
+                const { password, ...rest } = this.toObject();
+                return rest;
             },
             comparePassword: async function (value: string): Promise<boolean> {
                 if (!this.password) return false;

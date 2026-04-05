@@ -49,6 +49,7 @@ passport.use(
                     providerId: googleId,
                     picture: picture,
                     email: email,
+                    password: null,
                 });
                 done(null, user);
             } catch (error) {

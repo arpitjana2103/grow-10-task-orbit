@@ -27,6 +27,7 @@ export const registerUser = handleAsyncError(async function (req: Request, res: 
         providerId: email,
         email: email,
         password: password,
+        picture: null,
     });
 
     sendResponse(res, {

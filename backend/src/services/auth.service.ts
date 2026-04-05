@@ -19,9 +19,9 @@ export const ensureUser = async function (data: {
     provider: T_AccountProviderEnum;
     name: string;
     providerId: string;
-    picture?: string;
+    picture: string | null;
     email: string;
-    password?: string;
+    password: string | null;
 }): Promise<HydratedDocument<UserDocument>> {
     const { provider, name, providerId, picture, email, password } = data;
     const session = await mongoose.startSession();
@@ -43,7 +43,7 @@ export const ensureUser = async function (data: {
                 email: email,
                 name: name,
                 password: password,
-                profilePicture: picture || null,
+                profilePicture: picture,
                 emailVerified: provider === AccountProviderEnum.GOOGLE,
             });
             await user.save({ session });
