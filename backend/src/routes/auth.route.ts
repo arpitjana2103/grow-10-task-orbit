@@ -18,7 +18,7 @@ authRoutes.route("/google").get(
         Step 0: Strategy Lookup
             - passport.authenticate("google")
             - Fetches pre-configured GoogleStrategy from :
-            passport._strategies["google"]
+                passport._strategies["google"]
 
         Step 1: Delegate to Strategy
             - Calls:
@@ -123,14 +123,14 @@ authRoutes.route("/google/callback").get(
                 Path A : done(null, user);
                     - this.success(user, info);
                     - req.user = user (temporary (request-scoped))
-                    - res.login(user)
+                    - res.login(user) [ As session:true ]
 
                 Path B : done(error, false);
                     - Authentication failed
                     - this.error(error);
                     - error is forwarded to Express error pipeline : if (err) return next(err);
 
-        Step 12: Passport calls res.login(user) automatically
+        Step 12: Passport calls res.login(user) automatically [ As session:true ]
             - req.login() method set by `passport.initialize()` Middleware
             - Internally:
                 - serializeUser(user, done)
