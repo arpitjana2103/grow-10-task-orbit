@@ -33,7 +33,7 @@ passport.use(
             try {
                 const email = profile.emails?.[0]?.value;
                 const googleId = profile.id;
-                const picture = profile.photos?.[0]?.value || "";
+                const picture = profile.photos?.[0]?.value;
 
                 if (!email)
                     throw new AppError({
@@ -47,7 +47,7 @@ passport.use(
                     provider: AccountProviderEnum.GOOGLE,
                     name: profile.displayName,
                     providerId: googleId,
-                    picture: picture,
+                    picture: picture || null,
                     email: email,
                     password: null,
                 });

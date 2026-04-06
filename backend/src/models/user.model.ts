@@ -27,7 +27,7 @@ type UserQueryHelper = {
     byEmail(email: string): UserQuery<UserDoc | null>;
 };
 
-export type UserDoc = HydratedDocument<UserProps, UserMethods>;
+export type UserDoc = HydratedDocument<UserProps, UserMethods, UserQueryHelper>;
 type UserQuery<R> = QueryWithHelpers<R, UserDoc, UserQueryHelper>;
 type UserModel = Model<UserProps, UserQueryHelper, UserMethods>;
 
