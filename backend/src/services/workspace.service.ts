@@ -1,0 +1,62 @@
+import { HTTPSTATUSCODE } from "../config/http.config.js";
+import { ErrorCodeEnum } from "../enums/error-code.enum.js";
+import { RoleEnum } from "../enums/role.enum.js";
+import MemberModel from "../models/member.model.js";
+import RoleModel from "../models/role.model.js";
+import UserModel from "../models/user.model.js";
+import WorkspaceModel, { type WorkspaceDoc } from "../models/workspace.model.js";
+import { AppError } from "../utils/errors/app-error.util.js";
+
+export const createWorkspaceService = async function (
+    userId: string,
+    data: {
+        name: string;
+        description?: string | undefined;
+    },
+): Promise<WorkspaceDoc> {
+    const { name, description } = data;
+
+    // 1. Find User
+    const user = await UserModel.findById(userId);
+    if (!user) {
+        throw new AppError({
+            internalMessage: `User id='${userId}' not found in database`,
+            publicMessage: "Service configuration error. Please try again later.",
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    // 2. Find Owner Role
+    const ownerRole = await RoleModel.findOne({ name: RoleEnum.OWNER });
+    if (!ownerRole) {
+        throw new AppError({
+            internalMessage: `Role '${RoleEnum.OWNER}' not found in database`,
+            publicMessage: "Service configuration error. Please try again later.",
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    // 3. Create Workspace
+    const workspace = new WorkspaceModel({
+        name: name,
+        description: description,
+        owner: user._id,
+    });
+    await workspace.save();
+
+    // 5. Create Member for the new Workspace
+    const member = new MemberModel({
+        userId: user._id,
+        workspaceId: workspace._id,
+        role: ownerRole._id,
+    });
+    await member.save();
+
+    // 6. Set the new workspace as user's current workspace
+    user.currentWorkspace = workspace._id;
+    await user.save();
+
+    return workspace;
+};

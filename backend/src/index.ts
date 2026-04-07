@@ -20,6 +20,7 @@ import { authProtect } from "./middlewares/auth.middleware.js";
 import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
+import workspaceRoutes from "./routes/workspace.route.js";
 
 const app = express();
 
@@ -154,6 +155,7 @@ app.get(
 const BASE_PATH = config.BASE_PATH;
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, authProtect, userRoutes);
+app.use(`${BASE_PATH}/workspace`, authProtect, workspaceRoutes);
 
 // Middleware: Global error handler with env-based responses
 // - Routes errors to dev or prod handlers based on environment
