@@ -62,3 +62,23 @@ export const loginUser = handleAsyncError(async function (
         },
     });
 });
+
+export const logoutUser = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    req.logOut(function (err) {
+        if (err) throw err;
+        req.session.destroy(function (err) {
+            if (err) throw err;
+            res.clearCookie("to-session");
+
+            sendResponse(res, {
+                statusCode: HTTPSTATUSCODE.OK,
+                status: "success",
+                message: "user logged out",
+            });
+        });
+    });
+});

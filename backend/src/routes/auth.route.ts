@@ -5,12 +5,12 @@ import { config } from "../config/app.config.js";
 import {
     handleGoogleAuthSuccess,
     loginUser,
+    logoutUser,
     registerUser,
 } from "../controllers/auth.controller.js";
 
 const authRoutes = Router();
 
-// auth/google
 authRoutes.route("/google").get(
     passport.authenticate("google", {
         scope: ["profile", "email"],
@@ -188,40 +188,4 @@ authRoutes.route("/login").post(
     loginUser,
 );
 
-// app.post("/logout", (req, res, next) => {
-//   req.logout(function (err) {
-//     if (err) return next(err);
-
-//     req.session = null;
-//     res.redirect("/login");
-//     res.status(200).json({ message: "Logged out" });
-//
-//   });
-// });
-//
-// router.post("/logout", (req, res, next) => {
-//   req.logout(function (err) {
-//     if (err) return next(err);
-
-//     req.session.destroy((err) => {
-//       if (err) return next(err);
-
-//       res.clearCookie("to-session");
-//       res.status(200).json({ message: "Logged out successfully" });
-//     });
-//   });
-// });
-
-export default authRoutes;
-
-// res.logout()
-// - Removes req.user
-// - Clears Passport session data (passport.user)
-
-// req.session.destroy()
-// - Deletes session from store (MemoryStore / Redis)
-// - Invalidates session ID
-
-// res.clearCookie()
-// Removes session cookie from Browser
-// Prevents reuse of old sessionId
+authRoutes.route("/logout").post(logoutUser);
