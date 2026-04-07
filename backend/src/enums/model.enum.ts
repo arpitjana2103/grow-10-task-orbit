@@ -8,4 +8,4 @@ export const ModelEnum = {
     ROLE: "Role",
 } as const;
 
-export type T_ModelEnum = (typeof ModelEnum)[keyof typeof ModelEnum];
+export type TModelEnum = (typeof ModelEnum)[keyof typeof ModelEnum];

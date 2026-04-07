@@ -1,4 +1,4 @@
-import type { T_PermissionEnum, T_RoleEnum } from "../enums/role.enum.js";
+import type { TPermissionEnum, TRoleEnum } from "../enums/role.enum.js";
 import type { Document } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
@@ -8,8 +8,8 @@ import { PermissionEnum, RoleEnum } from "../enums/role.enum.js";
 import { RolePermissions } from "../utils/role-permission.util.js";
 
 export interface RoleDocument extends Document {
-    name: T_RoleEnum;
-    permissions: Array<T_PermissionEnum>;
+    name: TRoleEnum;
+    permissions: Array<TPermissionEnum>;
 }
 
 const roleSchema = new Schema<RoleDocument>(
@@ -23,7 +23,7 @@ const roleSchema = new Schema<RoleDocument>(
         permissions: {
             type: [String],
             enum: Object.values(PermissionEnum),
-            default: function (this: RoleDocument): Array<T_PermissionEnum> {
+            default: function (this: RoleDocument): Array<TPermissionEnum> {
                 return RolePermissions[this.name];
             },
         },

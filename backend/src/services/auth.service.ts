@@ -6,8 +6,8 @@ import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
 import {
     AccountProviderEnum,
-    type T_AccountProviderEnum,
-    type T_AuthStrategyEnum,
+    type TAccountProviderEnum,
+    type TAuthStrategyEnum,
 } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { RoleEnum } from "../enums/role.enum.js";
@@ -20,13 +20,13 @@ import { getErrorMessage } from "../utils/error.util.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 
 interface UserData {
-    provider: T_AccountProviderEnum;
+    provider: TAccountProviderEnum;
     name: string;
     providerId: string;
     picture: string | null;
     email: string;
     password: string | null;
-    strategy: T_AuthStrategyEnum;
+    strategy: TAuthStrategyEnum;
 }
 
 export const ensureUser = async function (data: UserData): Promise<TUserDoc> {
@@ -51,10 +51,10 @@ export const ensureUser = async function (data: UserData): Promise<TUserDoc> {
 
 export const verifyUser = async function (data: {
     user: TUserDoc;
-    provider: T_AccountProviderEnum;
+    provider: TAccountProviderEnum;
     password: string | null;
     providerId: string;
-    strategy: T_AuthStrategyEnum;
+    strategy: TAuthStrategyEnum;
 }): Promise<void> {
     const { user, provider, password, providerId, strategy } = data;
     const userId = user._id.toString();

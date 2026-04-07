@@ -1,4 +1,4 @@
-import type { T_AccountProviderEnum } from "../enums/account-provider.enum.js";
+import type { TAccountProviderEnum } from "../enums/account-provider.enum.js";
 import type { Document, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
@@ -7,7 +7,7 @@ import { AccountProviderEnum } from "../enums/account-provider.enum.js";
 import { ModelEnum } from "../enums/model.enum.js";
 
 export interface AccountDocument extends Document {
-    provider: T_AccountProviderEnum;
+    provider: TAccountProviderEnum;
     providerId: string;
     userId: Types.ObjectId;
     refreshToken?: string | null;

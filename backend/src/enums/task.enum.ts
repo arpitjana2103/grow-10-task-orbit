@@ -12,5 +12,5 @@ export const TaskPriorityEnum = {
     HIGH: "HIGH",
 } as const;
 
-export type T_TaskStatusEnum = (typeof TaskStatusEnum)[keyof typeof TaskStatusEnum];
-export type T_TaskPriorityEnum = (typeof TaskPriorityEnum)[keyof typeof TaskPriorityEnum];
+export type TTaskStatusEnum = (typeof TaskStatusEnum)[keyof typeof TaskStatusEnum];
+export type TTaskPriorityEnum = (typeof TaskPriorityEnum)[keyof typeof TaskPriorityEnum];

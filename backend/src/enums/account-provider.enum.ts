@@ -5,5 +5,5 @@ export const AccountProviderEnum = {
 
 export const AuthStrategyEnum = AccountProviderEnum;
 
-export type T_AccountProviderEnum = (typeof AccountProviderEnum)[keyof typeof AccountProviderEnum];
-export type T_AuthStrategyEnum = (typeof AuthStrategyEnum)[keyof typeof AuthStrategyEnum];
+export type TAccountProviderEnum = (typeof AccountProviderEnum)[keyof typeof AccountProviderEnum];
+export type TAuthStrategyEnum = (typeof AuthStrategyEnum)[keyof typeof AuthStrategyEnum];

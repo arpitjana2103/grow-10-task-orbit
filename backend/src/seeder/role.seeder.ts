@@ -1,6 +1,6 @@
 import "dotenv/config.js";
 
-import type { T_RoleEnum } from "../enums/role.enum.js";
+import type { TRoleEnum } from "../enums/role.enum.js";
 
 import mongoose from "mongoose";
 
@@ -18,7 +18,7 @@ const seedRoles = async function (): Promise<void> {
         await RoleModel.deleteMany({}).session(session);
 
         for (const roleName in RolePermissions) {
-            const role = roleName as T_RoleEnum;
+            const role = roleName as TRoleEnum;
             const permissions = RolePermissions[role];
 
             // Check if the role already exist

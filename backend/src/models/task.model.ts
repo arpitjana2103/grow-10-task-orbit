@@ -6,8 +6,8 @@ import { ModelEnum } from "../enums/model.enum.js";
 import {
     TaskPriorityEnum,
     TaskStatusEnum,
-    type T_TaskPriorityEnum,
-    type T_TaskStatusEnum,
+    type TTaskPriorityEnum,
+    type TTaskStatusEnum,
 } from "../enums/task.enum.js";
 import { generateTaskCode } from "../utils/uuid.util.js";
 
@@ -17,8 +17,8 @@ export interface TaskDocument extends Document {
     description: string | null;
     project: Types.ObjectId;
     workspace: Types.ObjectId;
-    status: T_TaskStatusEnum;
-    priority: T_TaskPriorityEnum;
+    status: TTaskStatusEnum;
+    priority: TTaskPriorityEnum;
     assignedTo: Types.ObjectId | null;
     createdBy: Types.ObjectId;
     dueDate: Date | null;

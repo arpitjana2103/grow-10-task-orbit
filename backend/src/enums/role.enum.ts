@@ -4,7 +4,7 @@ export const RoleEnum = {
     MEMBER: "MEMBER",
 } as const;
 
-export type T_RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
+export type TRoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
 
 export const PermissionEnum = {
     CREATE_WORKSPACE: "CREATE_WORKSPACE",
@@ -27,4 +27,4 @@ export const PermissionEnum = {
     VIEW_ONLY: "VIEW_ONLY",
 } as const;
 
-export type T_PermissionEnum = (typeof PermissionEnum)[keyof typeof PermissionEnum];
+export type TPermissionEnum = (typeof PermissionEnum)[keyof typeof PermissionEnum];

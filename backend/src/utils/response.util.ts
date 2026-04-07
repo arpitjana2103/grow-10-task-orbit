@@ -1,5 +1,5 @@
-import type { T_HttpStatusCode } from "../config/http.config.js";
-import type { T_ErrorCodeEnum } from "../enums/error-code.enum.js";
+import type { THttpStatusCode } from "../config/http.config.js";
+import type { TErrorCodeEnum } from "../enums/error-code.enum.js";
 import type { Response } from "express";
 
 type StatusType = "success" | "fail" | "error";
@@ -8,14 +8,14 @@ type ApiData = Record<string, unknown>;
 export function sendResponse(
     res: Response,
     options: {
-        statusCode: T_HttpStatusCode;
+        statusCode: THttpStatusCode;
         status: StatusType;
         internalMessage?: string;
         message?: string;
         data?: ApiData;
         env?: string;
         error?: any;
-        errorCode?: T_ErrorCodeEnum;
+        errorCode?: TErrorCodeEnum;
         stack?: any;
     },
 ): Response {

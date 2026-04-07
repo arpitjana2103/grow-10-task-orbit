@@ -1,7 +1,7 @@
-import { type T_PermissionEnum, type T_RoleEnum } from "../enums/role.enum.js";
+import { type TPermissionEnum, type TRoleEnum } from "../enums/role.enum.js";
 import { PermissionEnum } from "../enums/role.enum.js";
 
-export const RolePermissions: Record<T_RoleEnum, Array<T_PermissionEnum>> = {
+export const RolePermissions: Record<TRoleEnum, Array<TPermissionEnum>> = {
     OWNER: [
         PermissionEnum.CREATE_WORKSPACE,
         PermissionEnum.EDIT_WORKSPACE,
