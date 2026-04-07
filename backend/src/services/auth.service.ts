@@ -1,4 +1,4 @@
-import type { UserDoc } from "../models/user.model.js";
+import type { TUserDoc } from "../models/user.model.js";
 
 import mongoose from "mongoose";
 
@@ -29,7 +29,7 @@ interface UserData {
     strategy: T_AuthStrategyEnum;
 }
 
-export const ensureUser = async function (data: UserData): Promise<UserDoc> {
+export const ensureUser = async function (data: UserData): Promise<TUserDoc> {
     const { email, provider, providerId, password, strategy } = data;
 
     try {
@@ -50,7 +50,7 @@ export const ensureUser = async function (data: UserData): Promise<UserDoc> {
 };
 
 export const verifyUser = async function (data: {
-    user: UserDoc;
+    user: TUserDoc;
     provider: T_AccountProviderEnum;
     password: string | null;
     providerId: string;
@@ -125,7 +125,7 @@ export const verifyUser = async function (data: {
     }
 };
 
-export const createUser = async function (data: UserData): Promise<UserDoc> {
+export const createUser = async function (data: UserData): Promise<TUserDoc> {
     const session = await mongoose.startSession();
 
     try {
@@ -189,6 +189,7 @@ export const createUser = async function (data: UserData): Promise<UserDoc> {
         // 6. Set the new workspace as user's current workspace
         user.currentWorkspace = workspace._id;
         await user.save({ session });
+
         await session.commitTransaction();
         return user;
     } catch (error) {

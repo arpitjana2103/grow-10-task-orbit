@@ -16,6 +16,7 @@ import { config, runningOnProduction } from "./config/app.config.js";
 import connectDatabase from "./config/database.config.js";
 import { HTTPSTATUSCODE } from "./config/http.config.js";
 import { handleAsyncError } from "./middlewares/async-handler.middleware.js";
+import { authProtect } from "./middlewares/auth.middleware.js";
 import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
@@ -152,7 +153,7 @@ app.get(
 // Routes Middlewares
 const BASE_PATH = config.BASE_PATH;
 app.use(`${BASE_PATH}/auth`, authRoutes);
-app.use(`${BASE_PATH}/user`, userRoutes);
+app.use(`${BASE_PATH}/user`, authProtect, userRoutes);
 
 // Middleware: Global error handler with env-based responses
 // - Routes errors to dev or prod handlers based on environment

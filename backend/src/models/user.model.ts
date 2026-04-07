@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { ModelEnum } from "../enums/model.enum.js";
 import { bcryptCompare, bcryptHash } from "../utils/bcrypt.util.js";
 
-type UserProps = {
+type TUserProps = {
     name: string;
     email: string;
     password: string | null;
@@ -18,20 +18,20 @@ type UserProps = {
     emailVerified: boolean;
 };
 
-type UserMethods = {
+type TUserMethods = {
     comparePassword(candidate: string): Promise<boolean>;
-    omitPassword(): Omit<UserProps, "password">;
+    omitPassword(): Omit<TUserProps, "password">;
 };
 
-type UserQueryHelper = {
-    byEmail(email: string): UserQuery<UserDoc | null>;
+type TUserQueryHelper = {
+    byEmail(email: string): TUserQuery<TUserDoc | null>;
 };
 
-export type UserDoc = HydratedDocument<UserProps, UserMethods, UserQueryHelper>;
-type UserQuery<R> = QueryWithHelpers<R, UserDoc, UserQueryHelper>;
-type UserModel = Model<UserProps, UserQueryHelper, UserMethods>;
+export type TUserDoc = HydratedDocument<TUserProps, TUserMethods, TUserQueryHelper>;
+type TUserModel = Model<TUserProps, TUserQueryHelper, TUserMethods>;
+type TUserQuery<R> = QueryWithHelpers<R, TUserDoc, TUserQueryHelper>;
 
-const userSchema = new mongoose.Schema<UserProps, UserModel, UserMethods, UserQueryHelper>(
+const userSchema = new mongoose.Schema<TUserProps, TUserModel, TUserMethods, TUserQueryHelper>(
     {
         name: {
             type: String,
@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema<UserProps, UserModel, UserMethods, UserQu
     {
         timestamps: true,
         methods: {
-            omitPassword: function (): Omit<UserProps, "password"> {
+            omitPassword: function (): Omit<TUserProps, "password"> {
                 const { password, ...rest } = this.toObject();
                 return rest;
             },
@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema<UserProps, UserModel, UserMethods, UserQu
             },
         },
         query: {
-            byEmail(this: UserQuery<UserDoc | null>, email: string) {
+            byEmail(this: TUserQuery<TUserDoc | null>, email: string) {
                 return this.findOne({ email });
             },
         },
@@ -86,5 +86,5 @@ userSchema.pre("save", async function () {
     }
 });
 
-const UserModel = mongoose.model<UserProps, UserModel>(ModelEnum.USER, userSchema);
+const UserModel = mongoose.model<TUserProps, TUserModel>(ModelEnum.USER, userSchema);
 export default UserModel;
