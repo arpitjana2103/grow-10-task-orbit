@@ -1,20 +1,25 @@
-import type { Document, Types } from "mongoose";
+import type { Document, HydratedDocument, Model, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
 
 import { ModelEnum } from "../enums/model.enum.js";
 import { generateInviteCode } from "../utils/uuid.util.js";
 
-export interface WorkspaceDocument extends Document {
+type WorkspaceProps = {
     name: string;
     description: string;
     owner: Types.ObjectId;
     inviteCode: string;
-    createdAt: string;
-    updatedAt: string;
-}
+};
 
-const workspaceSchema = new Schema<WorkspaceDocument>(
+type WorkspaceMethods = {
+    resetInviteCode(): void;
+};
+
+type WorkspaceModel = Model<WorkspaceProps, {}, WorkspaceMethods>;
+export type WorkspaceDoc = HydratedDocument<WorkspaceProps, WorkspaceMethods>;
+
+const workspaceSchema = new Schema<WorkspaceProps, WorkspaceModel, WorkspaceMethods>(
     {
         name: { type: String, required: true, trim: true },
         description: { type: String, required: false },
@@ -33,13 +38,16 @@ const workspaceSchema = new Schema<WorkspaceDocument>(
     {
         timestamps: true,
         methods: {
-            resetInviteCode: function (this: WorkspaceDocument): void {
+            resetInviteCode: function (): void {
                 this.inviteCode = generateInviteCode();
             },
         },
     },
 );
 
-const WorkspaceModel = mongoose.model<WorkspaceDocument>(ModelEnum.WORKSPACE, workspaceSchema);
+const WorkspaceModel = mongoose.model<WorkspaceProps, WorkspaceModel>(
+    ModelEnum.WORKSPACE,
+    workspaceSchema,
+);
 
 export default WorkspaceModel;
