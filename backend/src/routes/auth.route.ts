@@ -189,3 +189,5 @@ authRoutes.route("/login").post(
 );
 
 authRoutes.route("/logout").post(logoutUser);
+
+export default authRoutes;
