@@ -95,7 +95,7 @@ passport.use(
                     password: password,
                     strategy: AuthStrategyEnum.EMAIL,
                 });
-
+                user.password = "__REMOVED__";
                 done(null, user);
             } catch (error) {
                 done(error, false);

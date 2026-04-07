@@ -4,6 +4,7 @@ import "./config/passport.config.js";
 import type { Request, Response, NextFunction } from "express";
 
 // import cookieSession from "cookie-session";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
@@ -17,6 +18,7 @@ import { HTTPSTATUSCODE } from "./config/http.config.js";
 import { handleAsyncError } from "./middlewares/async-handler.middleware.js";
 import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
 import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
 
 const app = express();
 
@@ -93,7 +95,7 @@ app.use(
 // - Recommended: use Redis or another external store in production
 // - Fully compatible with Passport (supports req.session.regenerate / save)
 // - Enables secure session lifecycle (prevents session fixation attacks)
-
+app.use(cookieParser());
 app.use(
     session({
         name: "to-session",
@@ -150,6 +152,7 @@ app.get(
 // Routes Middlewares
 const BASE_PATH = config.BASE_PATH;
 app.use(`${BASE_PATH}/auth`, authRoutes);
+app.use(`${BASE_PATH}/user`, userRoutes);
 
 // Middleware: Global error handler with env-based responses
 // - Routes errors to dev or prod handlers based on environment
