@@ -4,8 +4,10 @@ import { config } from "../config/app.config.js";
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
 import { AccountProviderEnum, AuthStrategyEnum } from "../enums/account-provider.enum.js";
+import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { handleAsyncError } from "../middlewares/async-handler.middleware.js";
 import { ensureUser } from "../services/auth.service.js";
+import { AppError } from "../utils/errors/app-error.util.js";
 import { sendResponse } from "../utils/response.util.js";
 import { registerUserSchema } from "../validations/auth.validations.js";
 
@@ -81,4 +83,19 @@ export const logoutUser = handleAsyncError(async function (
             });
         });
     });
+});
+
+export const authProtect = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    if (req.isAuthenticated()) return next();
+    else
+        throw new AppError({
+            publicMessage: "Authentication required for this operation",
+            internalMessage: "User is not authenticated (req.isAuthenticated() === false)",
+            statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
+            errorCode: ErrorCodeEnum.AUTH_UNAUTHORIZED_ACCESS,
+        });
 });
