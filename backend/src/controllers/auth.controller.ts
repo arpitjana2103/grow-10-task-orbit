@@ -84,18 +84,3 @@ export const logoutUser = handleAsyncError(async function (
         });
     });
 });
-
-export const authProtect = handleAsyncError(async function (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) {
-    if (req.isAuthenticated()) return next();
-    else
-        throw new AppError({
-            publicMessage: "Authentication required for this operation",
-            internalMessage: "User is not authenticated (req.isAuthenticated() === false)",
-            statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
-            errorCode: ErrorCodeEnum.AUTH_UNAUTHORIZED_ACCESS,
-        });
-});
