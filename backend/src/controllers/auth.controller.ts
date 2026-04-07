@@ -1,9 +1,9 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 import { config } from "../config/app.config.js";
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
-import { AccountProviderEnum } from "../enums/account-provider.enum.js";
+import { AccountProviderEnum, AuthStrategyEnum } from "../enums/account-provider.enum.js";
 import { handleAsyncError } from "../middlewares/async-handler.middleware.js";
 import { ensureUser } from "../services/auth.service.js";
 import { sendResponse } from "../utils/response.util.js";
@@ -19,7 +19,11 @@ export const handleGoogleAuthSuccess = handleAsyncError(async function (
     return res.redirect(`${config.FRONTEND_ORIGIN}/workspace/${currentWorkspaceId}`);
 });
 
-export const registerUser = handleAsyncError(async function (req: Request, res: Response) {
+export const registerUser = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
     const { name, email, password } = registerUserSchema.parse({ ...req.body });
     const user = await ensureUser({
         provider: AccountProviderEnum.EMAIL,
@@ -28,10 +32,11 @@ export const registerUser = handleAsyncError(async function (req: Request, res: 
         email: email,
         password: password,
         picture: null,
+        strategy: AuthStrategyEnum.EMAIL,
     });
 
     sendResponse(res, {
-        statusCode: HTTPSTATUSCODE.OK,
+        statusCode: HTTPSTATUSCODE.CREATED,
         status: "success",
         message: "user created",
         data: {
@@ -39,6 +44,21 @@ export const registerUser = handleAsyncError(async function (req: Request, res: 
                 name: user.name,
                 email: user.email,
             },
+        },
+    });
+});
+
+export const loginUser = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    sendResponse(res, {
+        statusCode: HTTPSTATUSCODE.OK,
+        status: "success",
+        message: "user logged in",
+        data: {
+            user: req.user?.omitPassword(),
         },
     });
 });

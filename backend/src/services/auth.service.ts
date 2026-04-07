@@ -4,7 +4,11 @@ import mongoose from "mongoose";
 
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { logger } from "../config/logger.config.js";
-import { AccountProviderEnum, type T_AccountProviderEnum } from "../enums/account-provider.enum.js";
+import {
+    AccountProviderEnum,
+    type T_AccountProviderEnum,
+    type T_AuthStrategyEnum,
+} from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { RoleEnum } from "../enums/role.enum.js";
 import AccountModel from "../models/account.model.js";
@@ -22,14 +26,15 @@ interface UserData {
     picture: string | null;
     email: string;
     password: string | null;
+    strategy: T_AuthStrategyEnum;
 }
 
 export const ensureUser = async function (data: UserData): Promise<UserDoc> {
-    const { email, provider, providerId, password } = data;
+    const { email, provider, providerId, password, strategy } = data;
 
     try {
         let user = await UserModel.findOne({ email });
-        if (user) await verifyUser({ user, provider, providerId, password });
+        if (user) await verifyUser({ user, provider, providerId, password, strategy });
         if (!user) user = await createUser(data);
         return user;
     } catch (error) {
@@ -49,8 +54,9 @@ export const verifyUser = async function (data: {
     provider: T_AccountProviderEnum;
     password: string | null;
     providerId: string;
+    strategy: T_AuthStrategyEnum;
 }): Promise<void> {
-    const { user, provider, password, providerId } = data;
+    const { user, provider, password, providerId, strategy } = data;
     const userId = user._id.toString();
 
     // 1. Check if Account exists for this provider
@@ -64,13 +70,23 @@ export const verifyUser = async function (data: {
         });
     }
 
+    // 2. Esnure strategy mismatch
+    if (account.provider !== strategy) {
+        new AppError({
+            internalMessage: `Auth strategy mismatch: attempted=${strategy}, actual=${account.provider}`,
+            publicMessage: "This account is linked with a different sign-in method",
+            statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
+            errorCode: ErrorCodeEnum.AUTH_NOT_FOUND,
+        });
+    }
+
     // 2. Check if User is active
     if (!user.isActive) {
         throw new AppError({
             publicMessage: "Your account has been deactivated",
             internalMessage: `Inactive user attempted login: ${userId}`,
             statusCode: HTTPSTATUSCODE.FORBIDDEN,
-            errorCode: ErrorCodeEnum.ACCESS_FORBIDDEN,
+            errorCode: ErrorCodeEnum.AUTH_ACCOUNT_DISABLED,
         });
     }
 
@@ -100,10 +116,10 @@ export const verifyUser = async function (data: {
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             throw new AppError({
-                publicMessage: "Invalid credentials",
+                publicMessage: "Invalid email or password",
                 internalMessage: `Password mismatch for userId: ${userId}`,
                 statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
-                errorCode: ErrorCodeEnum.AUTH_INVALID_TOKEN,
+                errorCode: ErrorCodeEnum.AUTH_INVALID_CREDENTIALS,
             });
         }
     }
@@ -173,7 +189,7 @@ export const createUser = async function (data: UserData): Promise<UserDoc> {
         // 6. Set the new workspace as user's current workspace
         user.currentWorkspace = workspace._id;
         await user.save({ session });
-
+        await session.commitTransaction();
         return user;
     } catch (error) {
         logger.error({ err: error });

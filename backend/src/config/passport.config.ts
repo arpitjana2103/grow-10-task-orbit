@@ -4,11 +4,12 @@ import type { VerifyCallback } from "passport-google-oauth2";
 
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
+import { Strategy as LocalStrategy } from "passport-local";
 
-import { AccountProviderEnum } from "../enums/account-provider.enum.js";
+import { AccountProviderEnum, AuthStrategyEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import UserModel from "../models/user.model.js";
-import { ensureUser } from "../services/auth.service.js";
+import { ensureUser, verifyUser } from "../services/auth.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 import { config } from "./app.config.js";
 import { HTTPSTATUSCODE } from "./http.config.js";
@@ -50,7 +51,51 @@ passport.use(
                     picture: picture || null,
                     email: email,
                     password: null,
+                    strategy: AuthStrategyEnum.GOOGLE,
                 });
+                done(null, user);
+            } catch (error) {
+                done(error, false);
+            }
+        },
+    ),
+);
+
+passport.use(
+    new LocalStrategy(
+        {
+            usernameField: "email", // find email from req.body.email
+            passwordField: "password", // find password from req.body.password
+            passReqToCallback: true,
+        },
+        async function localVerifyCallback(
+            req: Request,
+            email: string,
+            password: string,
+            done: VerifyCallback,
+        ) {
+            try {
+                // 1. Find user
+                const user = await UserModel.findOne({ email }).select("+password");
+
+                if (!user) {
+                    throw new AppError({
+                        internalMessage: `No user found for email: ${email}`,
+                        publicMessage: "Invalid email or password",
+                        statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
+                        errorCode: ErrorCodeEnum.AUTH_NOT_FOUND,
+                    });
+                }
+
+                // 2. Verify User
+                await verifyUser({
+                    user: user,
+                    provider: AccountProviderEnum.EMAIL,
+                    providerId: email,
+                    password: password,
+                    strategy: AuthStrategyEnum.EMAIL,
+                });
+
                 done(null, user);
             } catch (error) {
                 done(error, false);

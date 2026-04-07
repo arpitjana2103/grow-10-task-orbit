@@ -2,7 +2,11 @@ import { Router } from "express";
 import passport from "passport";
 
 import { config } from "../config/app.config.js";
-import { handleGoogleAuthSuccess, registerUser } from "../controllers/auth.controller.js";
+import {
+    handleGoogleAuthSuccess,
+    loginUser,
+    registerUser,
+} from "../controllers/auth.controller.js";
 
 const authRoutes = Router();
 
@@ -175,6 +179,14 @@ authRoutes.route("/google/callback").get(
 );
 
 authRoutes.route("/register").post(registerUser);
+
+authRoutes.route("/login").post(
+    passport.authenticate("local", {
+        session: true,
+        failWithError: true,
+    }),
+    loginUser,
+);
 
 // app.post("/logout", (req, res, next) => {
 //   req.logout(function (err) {
