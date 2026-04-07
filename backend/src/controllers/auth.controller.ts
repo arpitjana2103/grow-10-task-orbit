@@ -6,7 +6,7 @@ import { logger } from "../config/logger.config.js";
 import { AccountProviderEnum, AuthStrategyEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { handleAsyncError } from "../middlewares/async-handler.middleware.js";
-import { ensureUser } from "../services/auth.service.js";
+import { ensureUserService } from "../services/auth.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 import { sendResponse } from "../utils/response.util.js";
 import { registerUserSchema } from "../validations/auth.validations.js";
@@ -27,7 +27,7 @@ export const registerUser = handleAsyncError(async function (
     next: NextFunction,
 ) {
     const { name, email, password } = registerUserSchema.parse({ ...req.body });
-    const user = await ensureUser({
+    const user = await ensureUserService({
         provider: AccountProviderEnum.EMAIL,
         name: name,
         providerId: email,

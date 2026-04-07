@@ -9,7 +9,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { AccountProviderEnum, AuthStrategyEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import UserModel from "../models/user.model.js";
-import { ensureUser, verifyUser } from "../services/auth.service.js";
+import { ensureUserService, verifyUserService } from "../services/auth.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 import { config } from "./app.config.js";
 import { HTTPSTATUSCODE } from "./http.config.js";
@@ -44,7 +44,7 @@ passport.use(
                         errorCode: ErrorCodeEnum.AUTH_NOT_FOUND,
                     });
 
-                const user = await ensureUser({
+                const user = await ensureUserService({
                     provider: AccountProviderEnum.GOOGLE,
                     name: profile.displayName,
                     providerId: googleId,
@@ -88,7 +88,7 @@ passport.use(
                 }
 
                 // 2. Verify User
-                await verifyUser({
+                await verifyUserService({
                     user: user,
                     provider: AccountProviderEnum.EMAIL,
                     providerId: email,

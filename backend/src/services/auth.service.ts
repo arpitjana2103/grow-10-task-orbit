@@ -29,13 +29,13 @@ interface UserData {
     strategy: TAuthStrategyEnum;
 }
 
-export const ensureUser = async function (data: UserData): Promise<TUserDoc> {
+export const ensureUserService = async function (data: UserData): Promise<TUserDoc> {
     const { email, provider, providerId, password, strategy } = data;
 
     try {
         let user = await UserModel.findOne({ email });
-        if (user) await verifyUser({ user, provider, providerId, password, strategy });
-        if (!user) user = await createUser(data);
+        if (user) await verifyUserService({ user, provider, providerId, password, strategy });
+        if (!user) user = await createUserService(data);
         return user;
     } catch (error) {
         logger.error({ err: error });
@@ -49,7 +49,7 @@ export const ensureUser = async function (data: UserData): Promise<TUserDoc> {
     }
 };
 
-export const verifyUser = async function (data: {
+export const verifyUserService = async function (data: {
     user: TUserDoc;
     provider: TAccountProviderEnum;
     password: string | null;
@@ -125,7 +125,7 @@ export const verifyUser = async function (data: {
     }
 };
 
-export const createUser = async function (data: UserData): Promise<TUserDoc> {
+export const createUserService = async function (data: UserData): Promise<TUserDoc> {
     const session = await mongoose.startSession();
 
     try {
