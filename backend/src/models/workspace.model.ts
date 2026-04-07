@@ -1,3 +1,4 @@
+import type { TLeanDocument } from "../types/mongoose.types.js";
 import type { Document, HydratedDocument, Model, Types } from "mongoose";
 
 import mongoose, { Schema } from "mongoose";
@@ -5,21 +6,23 @@ import mongoose, { Schema } from "mongoose";
 import { ModelEnum } from "../enums/model.enum.js";
 import { generateInviteCode } from "../utils/uuid.util.js";
 
-type WorkspaceProps = {
+type TWorkspaceProps = {
     name: string;
     description: string;
     owner: Types.ObjectId;
     inviteCode: string;
 };
 
-type WorkspaceMethods = {
+type TWorkspaceMethods = {
     resetInviteCode(): void;
 };
 
-type WorkspaceModel = Model<WorkspaceProps, {}, WorkspaceMethods>;
-export type WorkspaceDoc = HydratedDocument<WorkspaceProps, WorkspaceMethods>;
+type TWorkspaceModel = Model<TWorkspaceProps, {}, TWorkspaceMethods>;
 
-const workspaceSchema = new Schema<WorkspaceProps, WorkspaceModel, WorkspaceMethods>(
+export type TWorkspaceDoc = HydratedDocument<TWorkspaceProps, TWorkspaceMethods>;
+export type TLeanWorkspaceDoc = TLeanDocument<TWorkspaceProps>;
+
+const workspaceSchema = new Schema<TWorkspaceProps, TWorkspaceModel, TWorkspaceMethods>(
     {
         name: { type: String, required: true, trim: true },
         description: { type: String, required: false },
@@ -45,7 +48,7 @@ const workspaceSchema = new Schema<WorkspaceProps, WorkspaceModel, WorkspaceMeth
     },
 );
 
-const WorkspaceModel = mongoose.model<WorkspaceProps, WorkspaceModel>(
+const WorkspaceModel = mongoose.model<TWorkspaceProps, TWorkspaceModel>(
     ModelEnum.WORKSPACE,
     workspaceSchema,
 );
