@@ -15,7 +15,7 @@ export const createWorkspace = handleAsyncError(async function (
     next: NextFunction,
 ) {
     const body = createWorkspaceSchema.parse(req.body);
-    const userId = req.user?._id.toString() as string;
+    const userId = req.user!._id.toString() as string;
     const newWorkspace = await createWorkspaceService(userId, {
         name: body.name,
         description: body.description,

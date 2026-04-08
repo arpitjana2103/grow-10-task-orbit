@@ -1,4 +1,4 @@
-import type { TUserDoc } from "../../models/user.model.ts";
+import type { TUserDoc } from "./../../models/user.model.ts";
 
 // What it does ?
 // It tells TypeScript:

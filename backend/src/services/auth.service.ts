@@ -1,4 +1,5 @@
 import type { TUserDoc } from "../models/user.model.js";
+import type { Request, Response } from "express";
 
 import mongoose from "mongoose";
 
@@ -205,4 +206,18 @@ export const createUserService = async function (data: UserData): Promise<TUserD
     } finally {
         session.endSession();
     }
+};
+
+export const destroySessionAndLogout = (req: Request, res: Response): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        req.logout((err) => {
+            if (err) return reject(err);
+
+            req.session.destroy((err) => {
+                if (err) return reject(err);
+                res.clearCookie("to-session");
+                resolve();
+            });
+        });
+    });
 };

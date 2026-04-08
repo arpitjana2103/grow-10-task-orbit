@@ -109,8 +109,17 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async function (userId: string, done) {
-    const user = await UserModel.findById(userId);
-    done(null, user);
+    try {
+        const user = await UserModel.findById(userId);
+
+        if (!user || !user.isActive) {
+            return done(null, false);
+        }
+
+        return done(null, user);
+    } catch (err) {
+        return done(err, false);
+    }
 });
 
 /*

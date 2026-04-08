@@ -9,11 +9,11 @@ export const getCurrentUser = handleAsyncError(async function (
     res: Response,
     next: NextFunction,
 ) {
-    const user = await req.user?.populate("currentWorkspace");
+    const user = await req.user!.populate("currentWorkspace");
 
     sendResponse(res, {
         statusCode: HTTPSTATUSCODE.OK,
         status: "success",
-        data: user?.omitPassword() || {},
+        data: user.omitPassword(),
     });
 });

@@ -6,7 +6,7 @@ import { logger } from "../config/logger.config.js";
 import { AccountProviderEnum, AuthStrategyEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { handleAsyncError } from "../middlewares/async-handler.middleware.js";
-import { ensureUserService } from "../services/auth.service.js";
+import { destroySessionAndLogout, ensureUserService } from "../services/auth.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 import { sendResponse } from "../utils/response.util.js";
 import { registerUserSchema } from "../validations/auth.validations.js";
@@ -70,17 +70,11 @@ export const logoutUser = handleAsyncError(async function (
     res: Response,
     next: NextFunction,
 ) {
-    req.logOut(function (err) {
-        if (err) throw err;
-        req.session.destroy(function (err) {
-            if (err) throw err;
-            res.clearCookie("to-session");
+    await destroySessionAndLogout(req, res);
 
-            sendResponse(res, {
-                statusCode: HTTPSTATUSCODE.OK,
-                status: "success",
-                message: "user logged out",
-            });
-        });
+    sendResponse(res, {
+        statusCode: HTTPSTATUSCODE.OK,
+        status: "success",
+        message: "user logged out",
     });
 });
