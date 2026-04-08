@@ -12,3 +12,5 @@ export const updateWorkspaceSchema = z.object({
     name: workspaceNameSchema,
     description: workspaceDescriptionSchema,
 });
+
+export const workspaceIdSchema = z.string().trim().min(1).max(255);

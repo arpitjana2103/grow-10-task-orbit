@@ -3,11 +3,14 @@ import { Router } from "express";
 import {
     createWorkspace,
     getAllWorkspacesUserIsMember,
+    getWorkspaceByIdwithMembers,
 } from "../controllers/workspace.controller.js";
 
 const workspaceRoutes = Router();
 
 workspaceRoutes.route("/").post(createWorkspace).get(getAllWorkspacesUserIsMember);
+workspaceRoutes.get("/:id", getWorkspaceByIdwithMembers);
+
 // workspaceRoutes.put("/update/:id", updateWorkspaceByIdController);
 
 // workspaceRoutes.put(
@@ -17,11 +20,7 @@ workspaceRoutes.route("/").post(createWorkspace).get(getAllWorkspacesUserIsMembe
 
 // workspaceRoutes.delete("/delete/:id", deleteWorkspaceByIdController);
 
-// workspaceRoutes.get("/all", getAllWorkspacesUserIsMember);
-
 // workspaceRoutes.get("/members/:id", getWorkspaceMembersController);
 // workspaceRoutes.get("/analytics/:id", getWorkspaceAnalyticsController);
-
-// workspaceRoutes.get("/:id", getWorkspaceByIdController);
 
 export default workspaceRoutes;
