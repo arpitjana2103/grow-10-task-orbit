@@ -6,20 +6,20 @@ import mongoose, { Schema } from "mongoose";
 import { ModelEnum } from "../enums/model.enum.js";
 
 export interface MemberDocument extends Document {
-    userId: Types.ObjectId;
-    workspaceId: Types.ObjectId;
+    user: Types.ObjectId;
+    workspace: Types.ObjectId;
     role: Types.ObjectId | RoleDocument;
     joinedAt: Date;
 }
 
 const memberSchema = new Schema<MemberDocument>(
     {
-        userId: {
+        user: {
             type: Schema.Types.ObjectId,
             ref: ModelEnum.USER,
             required: true,
         },
-        workspaceId: {
+        workspace: {
             type: Schema.Types.ObjectId,
             ref: ModelEnum.WORKSPACE,
             required: true,

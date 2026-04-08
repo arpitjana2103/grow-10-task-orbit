@@ -9,8 +9,8 @@ export const ensureUserMembershipInWorkspace = async function (data: {
 }) {
     const { userId, workspace } = data;
     const memberShip = await MemberModel.findOne({
-        userId: userId,
-        workspaceId: workspace._id,
+        user: userId,
+        workspace: workspace._id,
     }).populate({
         path: "role",
         select: "name",
@@ -21,7 +21,7 @@ export const ensureUserMembershipInWorkspace = async function (data: {
 
 export const getMembersInWorkspace = async function (data: { workspace: TWorkspaceDoc }) {
     const { workspace } = data;
-    const members = await MemberModel.find({ workspaceId: workspace._id })
+    const members = await MemberModel.find({ workspace: workspace._id })
         .populate({
             path: "role",
             select: "name",

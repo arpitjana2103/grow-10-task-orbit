@@ -181,8 +181,8 @@ export const createUserService = async function (data: UserData): Promise<TUserD
 
         // 5. Create Member for the new Workspace
         const member = new MemberModel({
-            userId: user._id,
-            workspaceId: workspace._id,
+            user: user._id,
+            workspace: workspace._id,
             role: ownerRole._id,
         });
         await member.save({ session });

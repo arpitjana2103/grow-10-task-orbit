@@ -66,9 +66,9 @@ export const createWorkspaceService = async function (
 export const getAllWorkspacesUserIsMemberService = async function (
     userId: string,
 ): Promise<TLeanWorkspaceDoc[]> {
-    const members = await MemberModel.find({ userId })
-        .populate({ path: "workspaceId", select: "name description" })
+    const members = await MemberModel.find({ user: userId })
+        .populate({ path: "workspace", select: "name description" })
         .lean()
         .exec();
-    return members.map((m) => m.workspaceId as unknown as TLeanWorkspaceDoc);
+    return members.map((m) => m.workspace as unknown as TLeanWorkspaceDoc);
 };
