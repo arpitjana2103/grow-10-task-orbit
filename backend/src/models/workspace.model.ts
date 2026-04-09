@@ -39,7 +39,7 @@ const workspaceSchema = new Schema<TWorkspaceProps, TWorkspaceModel, TWorkspaceM
         },
     },
     {
-        timestamps: true,
+        timestamps: false,
         methods: {
             resetInviteCode: function (): void {
                 this.inviteCode = generateInviteCode();

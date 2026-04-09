@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema<TUserProps, TUserModel, TUserMethods, TUs
         lastLogin: { type: Date, default: null },
     },
     {
-        timestamps: true,
+        timestamps: false,
         methods: {
             omitPassword: function (): Omit<TUserProps, "password"> {
                 const { password, ...rest } = this.toObject();

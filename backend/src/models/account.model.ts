@@ -36,7 +36,7 @@ const accountSchema = new Schema<AccountDocument>(
         tokenExpiry: { type: Date, default: null },
     },
     {
-        timestamps: true,
+        timestamps: false,
         toJSON: {
             transform(_doc, obj): void {
                 delete obj.refreshToken;

@@ -40,7 +40,7 @@ const projectSchema = new Schema<ProjectDocument>(
         },
     },
     {
-        timestamps: true,
+        timestamps: false,
     },
 );
 

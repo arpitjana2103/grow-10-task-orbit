@@ -35,7 +35,7 @@ const memberSchema = new Schema<MemberDocument>(
         },
     },
     {
-        timestamps: true,
+        timestamps: false,
     },
 );
 

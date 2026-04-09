@@ -79,7 +79,7 @@ const taskSchema = new Schema<TaskDocument>(
         },
     },
     {
-        timestamps: true,
+        timestamps: false,
     },
 );
 

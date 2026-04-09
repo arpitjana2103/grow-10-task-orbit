@@ -29,7 +29,7 @@ const roleSchema = new Schema<RoleDocument>(
         },
     },
     {
-        timestamps: true,
+        timestamps: false,
     },
 );
 
