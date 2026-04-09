@@ -4,12 +4,14 @@ import {
     createWorkspace,
     getAllWorkspacesUserIsMember,
     getWorkspaceByIdwithMembers,
+    getWorkspaceMembers,
 } from "../controllers/workspace.controller.js";
 
 const workspaceRoutes = Router();
 
 workspaceRoutes.route("/").post(createWorkspace).get(getAllWorkspacesUserIsMember);
 workspaceRoutes.get("/:id", getWorkspaceByIdwithMembers);
+workspaceRoutes.get("/members/:id", getWorkspaceMembers);
 
 // workspaceRoutes.put("/update/:id", updateWorkspaceByIdController);
 
@@ -19,8 +21,6 @@ workspaceRoutes.get("/:id", getWorkspaceByIdwithMembers);
 // );
 
 // workspaceRoutes.delete("/delete/:id", deleteWorkspaceByIdController);
-
-// workspaceRoutes.get("/members/:id", getWorkspaceMembersController);
 // workspaceRoutes.get("/analytics/:id", getWorkspaceAnalyticsController);
 
 export default workspaceRoutes;

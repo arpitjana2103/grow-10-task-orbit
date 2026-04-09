@@ -12,10 +12,9 @@ export const ensureUserMembershipInWorkspaceService = async function (data: {
     const memberShip = await MemberModel.findOne({
         user: userId,
         workspace: workspace._id,
-    }).populate({
-        path: "role",
-        select: "name",
-    });
+    })
+        .populate("role")
+        .select("-__v");
 
     return memberShip;
 };
