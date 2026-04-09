@@ -14,6 +14,7 @@ import { roleGuard } from "../services/role.service.js";
 import {
     createWorkspaceService,
     getAllWorkspacesUserIsMemberService,
+    getWorkspaceAnalyticsService,
 } from "../services/workspace.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 import { sendResponse } from "../utils/response.util.js";
@@ -134,5 +135,47 @@ export const getWorkspaceMembers = handleAsyncError(async function (
         statusCode: HTTPSTATUSCODE.OK,
         status: "success",
         data: { workspace: { ...workspace.toObject(), members } },
+    });
+});
+
+export const getWorkspaceAnalytics = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    const workspaceId = workspaceIdSchema.parse(req.params["id"]);
+    const userId = req.user!._id.toString() as string;
+
+    const workspace = await WorkspaceModel.findById(workspaceId);
+
+    if (!workspace) {
+        throw new AppError({
+            publicMessage: `Workspace not found with id:${workspaceId}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    const membership = await ensureUserMembershipInWorkspaceService({ userId, workspace });
+
+    if (!membership) {
+        throw new AppError({
+            statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
+            publicMessage: `membership of user:${userId} at workspace:${workspaceId} not found`,
+            errorCode: ErrorCodeEnum.ACCESS_UNAUTHORIZED,
+        });
+    }
+
+    roleGuard({
+        role: membership.role as RoleDocument,
+        requiredPermissions: [PermissionEnum.VIEW_ONLY],
+    });
+
+    const analytics = await getWorkspaceAnalyticsService(workspace);
+
+    sendResponse(res, {
+        statusCode: HTTPSTATUSCODE.OK,
+        status: "success",
+        data: { analytics },
     });
 });

@@ -3,8 +3,10 @@ import type { TLeanWorkspaceDoc, TWorkspaceDoc } from "../models/workspace.model
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { RoleEnum } from "../enums/role.enum.js";
+import { TaskStatusEnum } from "../enums/task.enum.js";
 import MemberModel from "../models/member.model.js";
 import RoleModel, { type RoleDocument } from "../models/role.model.js";
+import TaskModel from "../models/task.model.js";
 import UserModel from "../models/user.model.js";
 import WorkspaceModel from "../models/workspace.model.js";
 import { AppError } from "../utils/errors/app-error.util.js";
@@ -72,4 +74,31 @@ export const getAllWorkspacesUserIsMemberService = async function (userId: strin
     return members.map(function (m) {
         return { ...m.workspace, role: (m.role as RoleDocument).name };
     });
+};
+
+export const getWorkspaceAnalyticsService = async function (workspace: TWorkspaceDoc) {
+    const today = new Date();
+
+    const totalTasks = await TaskModel.countDocuments({
+        workspace: workspace._id,
+    });
+
+    const overdueTasks = await TaskModel.countDocuments({
+        workspace: workspace._id,
+        dueDate: { $lt: today },
+        status: { $ne: TaskStatusEnum.DONE },
+    });
+
+    const completedTasks = await TaskModel.countDocuments({
+        workspace: workspace._id,
+        status: TaskStatusEnum.DONE,
+    });
+
+    const analytics = {
+        totalTasks,
+        overdueTasks,
+        completedTasks,
+    };
+
+    return analytics;
 };
