@@ -18,6 +18,7 @@ import { HTTPSTATUSCODE } from "./config/http.config.js";
 import { handleAsyncError } from "./middlewares/async-handler.middleware.js";
 import { authProtect } from "./middlewares/auth.middleware.js";
 import { handleGlobalError } from "./middlewares/global-error-handler.middleware.js";
+import { requestLogger } from "./middlewares/requestLogger.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import workspaceRoutes from "./routes/workspace.route.js";
@@ -136,6 +137,9 @@ app.use(passport.initialize());
 // - Attaches the deserialized user to req.user
 // - Maintains authentication state across requests
 app.use(passport.session());
+
+// Middleware: Loggs Incoming Requests
+app.use(requestLogger);
 
 // Server Home Route
 app.get(
