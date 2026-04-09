@@ -1,9 +1,10 @@
+import type { RoleDocument } from "../models/role.model.js";
 import type { TWorkspaceDoc } from "../models/workspace.model.js";
 
 import MemberModel from "../models/member.model.js";
 import UserModel from "../models/user.model.js";
 
-export const ensureUserMembershipInWorkspace = async function (data: {
+export const ensureUserMembershipInWorkspaceService = async function (data: {
     userId: string;
     workspace: TWorkspaceDoc;
 }) {
@@ -19,7 +20,7 @@ export const ensureUserMembershipInWorkspace = async function (data: {
     return memberShip;
 };
 
-export const getMembersInWorkspace = async function (data: { workspace: TWorkspaceDoc }) {
+export const getMembersInWorkspaceService = async function (data: { workspace: TWorkspaceDoc }) {
     const { workspace } = data;
     const members = await MemberModel.find({ workspace: workspace._id })
         .populate({
@@ -30,7 +31,9 @@ export const getMembersInWorkspace = async function (data: { workspace: TWorkspa
             path: "user",
             select: "name email profilePicture",
         })
-        .select("-workspaceId");
+        .select("-workspace -createdAt -updatedAt -__v");
 
-    return members;
+    return members.map(function (m) {
+        return { ...m.toObject(), role: (m.role as RoleDocument).name };
+    });
 };

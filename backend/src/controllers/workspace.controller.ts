@@ -5,8 +5,8 @@ import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { handleAsyncError } from "../middlewares/async-handler.middleware.js";
 import WorkspaceModel from "../models/workspace.model.js";
 import {
-    ensureUserMembershipInWorkspace,
-    getMembersInWorkspace,
+    ensureUserMembershipInWorkspaceService,
+    getMembersInWorkspaceService,
 } from "../services/member.service.js";
 import {
     createWorkspaceService,
@@ -68,7 +68,7 @@ export const getWorkspaceByIdwithMembers = handleAsyncError(async function (
         });
     }
 
-    const membership = await ensureUserMembershipInWorkspace({ userId, workspace });
+    const membership = await ensureUserMembershipInWorkspaceService({ userId, workspace });
 
     if (!membership) {
         throw new AppError({
@@ -78,7 +78,7 @@ export const getWorkspaceByIdwithMembers = handleAsyncError(async function (
         });
     }
 
-    const members = await getMembersInWorkspace({ workspace });
+    const members = await getMembersInWorkspaceService({ workspace });
 
     await workspace.populate({ path: "owner", select: "name email profilePicture" });
 

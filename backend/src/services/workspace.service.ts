@@ -4,7 +4,7 @@ import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { RoleEnum } from "../enums/role.enum.js";
 import MemberModel from "../models/member.model.js";
-import RoleModel from "../models/role.model.js";
+import RoleModel, { type RoleDocument } from "../models/role.model.js";
 import UserModel from "../models/user.model.js";
 import WorkspaceModel from "../models/workspace.model.js";
 import { AppError } from "../utils/errors/app-error.util.js";
@@ -63,12 +63,13 @@ export const createWorkspaceService = async function (
     return workspace;
 };
 
-export const getAllWorkspacesUserIsMemberService = async function (
-    userId: string,
-): Promise<TLeanWorkspaceDoc[]> {
+export const getAllWorkspacesUserIsMemberService = async function (userId: string) {
     const members = await MemberModel.find({ user: userId })
         .populate({ path: "workspace", select: "name description" })
+        .populate({ path: "role", select: "name" })
         .lean()
         .exec();
-    return members.map((m) => m.workspace as unknown as TLeanWorkspaceDoc);
+    return members.map(function (m) {
+        return { ...m.workspace, role: (m.role as RoleDocument).name };
+    });
 };
