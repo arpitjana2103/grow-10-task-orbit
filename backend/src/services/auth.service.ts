@@ -34,7 +34,7 @@ export const ensureUserService = async function (data: UserData): Promise<TUserD
     const { email, provider, providerId, password, strategy } = data;
 
     try {
-        let user = await UserModel.findOne({ email });
+        let user = await UserModel.findOne({ email }).select("+password");
         if (user) await verifyUserService({ user, provider, providerId, password, strategy });
         if (!user) user = await createUserService(data);
         return user;

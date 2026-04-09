@@ -27,7 +27,7 @@ export const getMembersInWorkspace = async function (data: { workspace: TWorkspa
             select: "name",
         })
         .populate({
-            path: "userId",
+            path: "user",
             select: "name email profilePicture",
         })
         .select("-workspaceId");

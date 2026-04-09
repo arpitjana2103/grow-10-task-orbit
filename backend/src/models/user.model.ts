@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema<TUserProps, TUserModel, TUserMethods, TUs
                 const { password, ...rest } = this.toObject();
                 return rest;
             },
-            comparePassword: async function (value: string): Promise<boolean> {
+            comparePassword: async function (this: TUserDoc, value: string): Promise<boolean> {
                 if (!this.password) return false;
                 return bcryptCompare(value, this.password);
             },
