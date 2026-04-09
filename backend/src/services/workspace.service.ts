@@ -2,7 +2,7 @@ import type { TLeanWorkspaceDoc, TWorkspaceDoc } from "../models/workspace.model
 
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
-import { RoleEnum } from "../enums/role.enum.js";
+import { RoleEnum, type TRoleEnum } from "../enums/role.enum.js";
 import { TaskStatusEnum } from "../enums/task.enum.js";
 import MemberModel from "../models/member.model.js";
 import RoleModel, { type RoleDocument } from "../models/role.model.js";
@@ -101,4 +101,36 @@ export const getWorkspaceAnalyticsService = async function (workspace: TWorkspac
     };
 
     return analytics;
+};
+
+export const changeMemberRoleService = async function (data: {
+    workspace: TWorkspaceDoc;
+    memberId: string;
+    roleName: TRoleEnum;
+}) {
+    const { workspace, memberId, roleName } = data;
+
+    const role = await RoleModel.findOne({ name: roleName });
+    if (!role) {
+        throw new AppError({
+            internalMessage: `Role '${roleName}' not found in database`,
+            publicMessage: "Service configuration error. Please try again later.",
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    const member = await MemberModel.findOne({ workspace: workspace._id, _id: memberId });
+    if (!member) {
+        throw new AppError({
+            internalMessage: `Member not found in workspace`,
+            publicMessage: `member:${memberId} not found in workspace:${workspace._id}`,
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    member.role = role._id;
+    const updatedMember = await member.save();
+    return updatedMember.populate({ path: "role", select: "name" });
 };
