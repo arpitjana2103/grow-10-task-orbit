@@ -11,8 +11,8 @@ export const createWorkspaceSchema = z.object({
 });
 
 export const updateWorkspaceSchema = z.object({
-    name: workspaceNameSchema,
-    description: workspaceDescriptionSchema,
+    name: workspaceNameSchema.optional(),
+    description: workspaceDescriptionSchema.optional(),
 });
 
 export const changeRoleSchema = z.object({

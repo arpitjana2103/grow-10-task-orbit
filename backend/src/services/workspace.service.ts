@@ -102,3 +102,16 @@ export const getWorkspaceAnalyticsService = async function (workspace: TWorkspac
 
     return analytics;
 };
+
+export const updateWorkspaceService = async function (data: {
+    workspace: TWorkspaceDoc;
+    name: string | undefined;
+    description: string | undefined;
+}) {
+    const { workspace, name, description } = data;
+    if (name) workspace.name = name;
+    if (description) workspace.description = description;
+
+    const updatedWorkspace = await workspace.save();
+    return updatedWorkspace;
+};

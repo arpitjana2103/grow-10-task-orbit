@@ -8,12 +8,13 @@ import {
     getWorkspaceByIdwithMembers,
     getWorkspaceMembers,
     joinWorksapceByInviteCode,
+    updateWorkspace,
 } from "../controllers/workspace.controller.js";
 
 const workspaceRoutes = Router();
 
 workspaceRoutes.route("/").post(createWorkspace).get(getAllWorkspacesUserIsMember);
-workspaceRoutes.route("/:workspaceId").get(getWorkspaceByIdwithMembers);
+workspaceRoutes.route("/:workspaceId").get(getWorkspaceByIdwithMembers).patch(updateWorkspace);
 workspaceRoutes.route("/:workspaceId/analytics").get(getWorkspaceAnalytics);
 workspaceRoutes.route("/:workspaceId/members").get(getWorkspaceMembers);
 workspaceRoutes.route("/:workspaceId/members/:memberId/role").put(changeWorkspaceMemberRole);
