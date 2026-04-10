@@ -12,11 +12,11 @@ import {
 const workspaceRoutes = Router();
 
 workspaceRoutes.route("/").post(createWorkspace).get(getAllWorkspacesUserIsMember);
-workspaceRoutes.get("/:id", getWorkspaceByIdwithMembers);
-workspaceRoutes.get("/members/:id", getWorkspaceMembers);
-workspaceRoutes.get("/analytics/:id", getWorkspaceAnalytics);
-
-workspaceRoutes.put("/change/member/role/:id", changeWorkspaceMemberRole);
+workspaceRoutes.route("/:workspaceId").get(getWorkspaceByIdwithMembers);
+workspaceRoutes.route("/:workspaceId/analytics").get(getWorkspaceAnalytics);
+workspaceRoutes.route("/:workspaceId/members").get(getWorkspaceMembers);
+workspaceRoutes.route("/:workspaceId/members/:memberId/role").put(changeWorkspaceMemberRole);
+// workspaceRoutes.route("/join/:inviteCode").post(joinWorksapceByInviteCode)
 
 // workspaceRoutes.put("/update/:id", updateWorkspaceByIdController);
 

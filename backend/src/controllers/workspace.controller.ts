@@ -19,6 +19,7 @@ import {
 } from "../services/workspace.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 import { sendResponse } from "../utils/response.util.js";
+import { memberIdSchema } from "../validations/member.validations.js";
 import {
     changeRoleSchema,
     createWorkspaceSchema,
@@ -64,7 +65,7 @@ export const getWorkspaceByIdwithMembers = handleAsyncError(async function (
     res: Response,
     next: NextFunction,
 ) {
-    const workspaceId = workspaceIdSchema.parse(req.params["id"]);
+    const workspaceId = workspaceIdSchema.parse(req.params["workspaceId"]);
     const userId = req.user!._id.toString() as string;
 
     const workspace = await WorkspaceModel.findById(workspaceId);
@@ -107,7 +108,7 @@ export const getWorkspaceMembers = handleAsyncError(async function (
     res: Response,
     next: NextFunction,
 ) {
-    const workspaceId = workspaceIdSchema.parse(req.params["id"]);
+    const workspaceId = workspaceIdSchema.parse(req.params["workspaceId"]);
     const userId = req.user!._id.toString() as string;
 
     const workspace = await WorkspaceModel.findById(workspaceId).select("name");
@@ -148,7 +149,7 @@ export const getWorkspaceAnalytics = handleAsyncError(async function (
     res: Response,
     next: NextFunction,
 ) {
-    const workspaceId = workspaceIdSchema.parse(req.params["id"]);
+    const workspaceId = workspaceIdSchema.parse(req.params["workspaceId"]);
     const userId = req.user!._id.toString() as string;
 
     const workspace = await WorkspaceModel.findById(workspaceId);
@@ -190,9 +191,10 @@ export const changeWorkspaceMemberRole = handleAsyncError(async function (
     res: Response,
     next: NextFunction,
 ) {
-    const workspaceId = workspaceIdSchema.parse(req.params["id"]);
+    const workspaceId = workspaceIdSchema.parse(req.params["workspaceId"]);
+    const memberId = memberIdSchema.parse(req.params["memberId"]);
     const userId = req.user!._id.toString() as string;
-    const { roleName, memberId } = changeRoleSchema.parse(req.body);
+    const { roleName } = changeRoleSchema.parse(req.body);
 
     const workspace = await WorkspaceModel.findById(workspaceId);
 

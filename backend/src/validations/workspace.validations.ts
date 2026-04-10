@@ -17,15 +17,6 @@ export const updateWorkspaceSchema = z.object({
 
 export const changeRoleSchema = z.object({
     roleName: z.enum(Object.values(RoleEnum)),
-    memberId: z.string().trim().min(1).max(255),
 });
 
 export const workspaceIdSchema = z.string().trim().min(1).max(255);
-
-enum Color {
-    Red = "red",
-    Green = "green",
-    Blue = "blue",
-}
-
-const ColorSchema = z.enum(Color); // ✅
