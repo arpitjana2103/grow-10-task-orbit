@@ -15,6 +15,7 @@ import {
 import { roleGuard } from "../services/role.service.js";
 import {
     createWorkspaceService,
+    deleteWorkspaceService,
     getAllWorkspacesUserIsMemberService,
     getWorkspaceAnalyticsService,
     updateWorkspaceService,
@@ -89,6 +90,48 @@ export const updateWorkspace = handleAsyncError(async function (
         statusCode: HTTPSTATUSCODE.OK,
         status: "success",
         data: { workspace: updateWorkspace },
+    });
+});
+
+export const deleteWorkspace = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    const workspaceId = workspaceIdSchema.parse(req.params["workspaceId"]);
+    const userId = req.user!._id.toString() as string;
+
+    const workspace = await WorkspaceModel.findById(workspaceId);
+
+    if (!workspace) {
+        throw new AppError({
+            publicMessage: `Workspace not found with id:${workspaceId}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    const membership = await ensureUserMembershipInWorkspaceService({ userId, workspace });
+
+    if (!membership) {
+        throw new AppError({
+            statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
+            publicMessage: `membership of user:${userId} at workspace:${workspaceId} not found`,
+            errorCode: ErrorCodeEnum.ACCESS_UNAUTHORIZED,
+        });
+    }
+
+    roleGuard({
+        role: membership.role as RoleDocument,
+        requiredPermissions: [PermissionEnum.DELETE_WORKSPACE],
+    });
+
+    await deleteWorkspaceService({ workspace, user: req.user! });
+
+    sendResponse(res, {
+        statusCode: HTTPSTATUSCODE.OK,
+        status: "success",
+        message: "Workspace deleted successfully",
     });
 });
 

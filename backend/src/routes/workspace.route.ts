@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
     changeWorkspaceMemberRole,
     createWorkspace,
+    deleteWorkspace,
     getAllWorkspacesUserIsMember,
     getWorkspaceAnalytics,
     getWorkspaceByIdwithMembers,
@@ -14,14 +15,14 @@ import {
 const workspaceRoutes = Router();
 
 workspaceRoutes.route("/").post(createWorkspace).get(getAllWorkspacesUserIsMember);
-workspaceRoutes.route("/:workspaceId").get(getWorkspaceByIdwithMembers).patch(updateWorkspace);
+workspaceRoutes
+    .route("/:workspaceId")
+    .get(getWorkspaceByIdwithMembers)
+    .patch(updateWorkspace)
+    .delete(deleteWorkspace);
 workspaceRoutes.route("/:workspaceId/analytics").get(getWorkspaceAnalytics);
 workspaceRoutes.route("/:workspaceId/members").get(getWorkspaceMembers);
 workspaceRoutes.route("/:workspaceId/members/:memberId/role").put(changeWorkspaceMemberRole);
 workspaceRoutes.route("/invites/:inviteCode/join").post(joinWorksapceByInviteCode);
-
-// workspaceRoutes.put("/update/:id", updateWorkspaceByIdController);
-
-// workspaceRoutes.delete("/delete/:id", deleteWorkspaceByIdController);
 
 export default workspaceRoutes;

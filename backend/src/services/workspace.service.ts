@@ -1,14 +1,20 @@
+import type { TUserDoc } from "../models/user.model.js";
 import type { TLeanWorkspaceDoc, TWorkspaceDoc } from "../models/workspace.model.js";
 
+import mongoose from "mongoose";
+
 import { HTTPSTATUSCODE } from "../config/http.config.js";
+import { logger } from "../config/logger.config.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { RoleEnum, type TRoleEnum } from "../enums/role.enum.js";
 import { TaskStatusEnum } from "../enums/task.enum.js";
 import MemberModel from "../models/member.model.js";
+import ProjectModel from "../models/project.model.js";
 import RoleModel, { type RoleDocument } from "../models/role.model.js";
 import TaskModel from "../models/task.model.js";
 import UserModel from "../models/user.model.js";
 import WorkspaceModel from "../models/workspace.model.js";
+import { getErrorMessage } from "../utils/error.util.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 
 export const createWorkspaceService = async function (
@@ -114,4 +120,60 @@ export const updateWorkspaceService = async function (data: {
 
     const updatedWorkspace = await workspace.save();
     return updatedWorkspace;
+};
+
+export const deleteWorkspaceService = async (data: {
+    workspace: TWorkspaceDoc;
+    user: TUserDoc;
+}) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const { workspace, user } = data;
+
+        // 1. Check if the user owns the workspace
+        if (!workspace.owner.equals(user._id)) {
+            throw new AppError({
+                statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
+                internalMessage: `user:${user._id} trying to delete workspace:${workspace._id}, while workspace.owner:${workspace.owner}`,
+                publicMessage: `You are authorized to delete this workspace`,
+                errorCode: ErrorCodeEnum.ACCESS_UNAUTHORIZED,
+            });
+        }
+
+        // 2. Delete Projects, Tasks, Members belongs to workspace
+        await ProjectModel.deleteMany({ workspace: workspace._id }).session(session);
+        await TaskModel.deleteMany({ workspace: workspace._id }).session(session);
+        await MemberModel.deleteMany({
+            workspaceId: workspace._id,
+        }).session(session);
+
+        // 3. Update the user's currentWorkspace if it matches the worksapce to delete
+        if (user.currentWorkspace?.equals(workspace._id)) {
+            const memberWorkspace = await MemberModel.findOne({ userId: user._id }).session(
+                session,
+            );
+            // Update the user's currentWorkspace
+            user.currentWorkspace = memberWorkspace ? memberWorkspace._id : null;
+
+            await user.save({ session });
+        }
+
+        // 4. Delete the workspace
+        await workspace.deleteOne({ session });
+        await session.commitTransaction();
+    } catch (error) {
+        logger.error({ err: error });
+        await session.abortTransaction();
+        if (error instanceof AppError) throw error;
+        throw new AppError({
+            publicMessage: "Failed to Delete Workspace",
+            internalMessage: getErrorMessage(error),
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
+            errorCode: ErrorCodeEnum.INTERNAL_SERVER_ERROR,
+        });
+    } finally {
+        session.endSession();
+    }
 };

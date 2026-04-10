@@ -8,7 +8,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 
 import { AccountProviderEnum, AuthStrategyEnum } from "../enums/account-provider.enum.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
-import UserModel from "../models/user.model.js";
+import UserModel, { type TUserDoc } from "../models/user.model.js";
 import { ensureUserService, verifyUserService } from "../services/auth.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 import { config } from "./app.config.js";
