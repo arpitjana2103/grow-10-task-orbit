@@ -7,12 +7,13 @@ import { PermissionEnum } from "../enums/role.enum.js";
 import { handleAsyncError } from "../middlewares/async-handler.middleware.js";
 import WorkspaceModel from "../models/workspace.model.js";
 import {
+    addMemberToWorkspaceService,
+    changeMemberRoleService,
     ensureUserMembershipInWorkspaceService,
     getMembersInWorkspaceService,
 } from "../services/member.service.js";
 import { roleGuard } from "../services/role.service.js";
 import {
-    changeMemberRoleService,
     createWorkspaceService,
     getAllWorkspacesUserIsMemberService,
     getWorkspaceAnalyticsService,
@@ -24,6 +25,7 @@ import {
     changeRoleSchema,
     createWorkspaceSchema,
     workspaceIdSchema,
+    workspaceInviteCodeSchema,
 } from "../validations/workspace.validations.js";
 
 export const createWorkspace = handleAsyncError(async function (
@@ -227,5 +229,42 @@ export const changeWorkspaceMemberRole = handleAsyncError(async function (
         statusCode: HTTPSTATUSCODE.OK,
         status: "success",
         data: { member: updatedMember },
+    });
+});
+
+export const joinWorksapceByInviteCode = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    const inviteCode = workspaceInviteCodeSchema.parse(req.params["inviteCode"]);
+    const userId = req.user!._id.toString() as string;
+
+    const workspace = await WorkspaceModel.findOne({ inviteCode });
+
+    if (!workspace) {
+        throw new AppError({
+            publicMessage: `Workspace not found with invite code:${inviteCode}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    const membership = await ensureUserMembershipInWorkspaceService({ userId, workspace });
+
+    if (membership) {
+        throw new AppError({
+            statusCode: HTTPSTATUSCODE.CONFLICT,
+            publicMessage: `User:${userId} is already a member of workspace:${workspace._id}`,
+            errorCode: ErrorCodeEnum.RESOURCE_CONFLICT,
+        });
+    }
+
+    await addMemberToWorkspaceService({ workspace, userId });
+
+    sendResponse(res, {
+        statusCode: HTTPSTATUSCODE.OK,
+        status: "success",
+        data: { workspace },
     });
 });

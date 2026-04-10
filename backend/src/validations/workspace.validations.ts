@@ -20,3 +20,4 @@ export const changeRoleSchema = z.object({
 });
 
 export const workspaceIdSchema = z.string().trim().min(1).max(255);
+export const workspaceInviteCodeSchema = z.string().trim().length(8);

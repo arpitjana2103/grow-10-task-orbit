@@ -14,8 +14,6 @@ export const roleGuard = function (data: {
     const rolePermissionsSet = new Set(role.permissions);
     const missingPermissions: TPermissionEnum[] = [];
 
-    console.log(rolePermissionsSet);
-    console.log(requiredPermissions);
     const hasPermission = requiredPermissions.every(function (p) {
         if (rolePermissionsSet.has(p)) return true;
         else {

@@ -7,6 +7,7 @@ import {
     getWorkspaceAnalytics,
     getWorkspaceByIdwithMembers,
     getWorkspaceMembers,
+    joinWorksapceByInviteCode,
 } from "../controllers/workspace.controller.js";
 
 const workspaceRoutes = Router();
@@ -16,7 +17,7 @@ workspaceRoutes.route("/:workspaceId").get(getWorkspaceByIdwithMembers);
 workspaceRoutes.route("/:workspaceId/analytics").get(getWorkspaceAnalytics);
 workspaceRoutes.route("/:workspaceId/members").get(getWorkspaceMembers);
 workspaceRoutes.route("/:workspaceId/members/:memberId/role").put(changeWorkspaceMemberRole);
-// workspaceRoutes.route("/join/:inviteCode").post(joinWorksapceByInviteCode)
+workspaceRoutes.route("/invites/:inviteCode/join").post(joinWorksapceByInviteCode);
 
 // workspaceRoutes.put("/update/:id", updateWorkspaceByIdController);
 
