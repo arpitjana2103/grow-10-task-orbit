@@ -95,6 +95,40 @@ export const getProjectByIdAndWorkspaceIdService = async function (data: {
     return project;
 };
 
+export const updateProjectByIdAndWorkspaceService = async function (data: {
+    projectId: string;
+    workspace: TWorkspaceDoc;
+    body: {
+        emoji: string | undefined;
+        name: string | undefined;
+        description: string | undefined;
+    };
+}) {
+    const {
+        projectId,
+        workspace,
+        body: { emoji, name, description },
+    } = data;
+
+    const project = await ProjectModel.findOne({
+        _id: projectId,
+        workspace: workspace._id,
+    });
+
+    if (!project) {
+        throw new AppError({
+            publicMessage: `Project not found with id:${projectId} in workspace:${workspace._id.toString()}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    if (emoji) project.emoji = emoji;
+    if (name) project.name = name;
+    if (description) project.description = description;
+    return await project.save();
+};
+
 export const getProjectAnalyticsService = async function (data: {
     workspace: TWorkspaceDoc;
     projectId: string;

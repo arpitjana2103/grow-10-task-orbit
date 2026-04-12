@@ -12,6 +12,7 @@ import {
     getProjectAnalyticsService,
     getProjectByIdAndWorkspaceIdService,
     getProjectsInWorkspaceService,
+    updateProjectByIdAndWorkspaceService,
 } from "../services/project.service.js";
 import { roleGuard } from "../services/role.service.js";
 import { AppError } from "../utils/errors/app-error.util.js";
@@ -20,6 +21,7 @@ import {
     createProjectSchema,
     projectIdSchema,
     projectPaginationQuerySchema,
+    updateProjectSchema,
 } from "../validations/project.validations.js";
 import { workspaceIdSchema } from "../validations/workspace.validations.js";
 
@@ -161,6 +163,56 @@ export const getProjectByIdandWorkspaceId = handleAsyncError(async function (
         status: "success",
         data: {
             project,
+        },
+    });
+});
+
+export const updateProjectByIdandWorkspaceId = handleAsyncError(async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    const workspaceId = await workspaceIdSchema.parseAsync(req.params["workspaceId"]);
+    const projectId = await projectIdSchema.parseAsync(req.params["projectId"]);
+    const { emoji, name, description } = await updateProjectSchema.parseAsync(req.body);
+    const userId = req.user!._id.toString() as string;
+
+    const workspace = await WorkspaceModel.findById(workspaceId);
+
+    if (!workspace) {
+        throw new AppError({
+            publicMessage: `Workspace not found with id:${workspaceId}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    const membership = await ensureUserMembershipInWorkspaceService({ userId, workspace });
+
+    if (!membership) {
+        throw new AppError({
+            statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
+            publicMessage: `membership of user:${userId} at workspace:${workspaceId} not found`,
+            errorCode: ErrorCodeEnum.ACCESS_UNAUTHORIZED,
+        });
+    }
+
+    roleGuard({
+        role: membership.role as RoleDocument,
+        requiredPermissions: [PermissionEnum.EDIT_PROJECT],
+    });
+
+    const updatedProject = await updateProjectByIdAndWorkspaceService({
+        projectId,
+        workspace,
+        body: { emoji, name, description },
+    });
+
+    sendResponse(res, {
+        statusCode: HTTPSTATUSCODE.OK,
+        status: "success",
+        data: {
+            project: updatedProject,
         },
     });
 });
