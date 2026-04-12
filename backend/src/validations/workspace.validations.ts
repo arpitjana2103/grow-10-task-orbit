@@ -16,7 +16,7 @@ export const updateWorkspaceSchema = z.object({
 });
 
 export const changeRoleSchema = z.object({
-    roleName: z.enum(Object.values(RoleEnum)),
+    roleName: z.enum(Object.values(RoleEnum) as [string, ...string[]]),
 });
 
 export const workspaceIdSchema = z.string().trim().min(1).max(255);

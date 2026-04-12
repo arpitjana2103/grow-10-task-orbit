@@ -8,9 +8,10 @@ import {
     getProjectByIdandWorkspaceId,
     updateProjectByIdandWorkspaceId,
 } from "../controllers/project.controller.js";
-const projectRoutes = Router({ mergeParams: true });
 
 // workspaceRoutes.use("/:workspaceId/projects", projectRoutes);
+const projectRoutes = Router({ mergeParams: true });
+
 projectRoutes.route("/").post(createProject).get(getAllProjectsInWorkspace);
 
 projectRoutes
