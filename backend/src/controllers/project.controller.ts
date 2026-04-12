@@ -101,7 +101,7 @@ export const getAllProjectsInWorkspace = handleAsyncError(async function (
     });
 
     const { pageSize, pageNumber } = await projectPaginationQuerySchema.parseAsync(req.query);
-    const { projects, totalCount, totalPages, skipCount } = await getProjectsInWorkspaceService({
+    const { projects, pagination } = await getProjectsInWorkspaceService({
         workspace,
         pageSize: pageSize,
         pageNumber: pageNumber,
@@ -112,9 +112,7 @@ export const getAllProjectsInWorkspace = handleAsyncError(async function (
         status: "success",
         data: {
             projects,
-            totalCount,
-            totalPages,
-            skipCount,
+            pagination,
         },
     });
 });

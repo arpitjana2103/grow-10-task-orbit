@@ -1,5 +1,7 @@
 import type { TWorkspaceDoc } from "../models/workspace.model.js";
 
+import { is } from "zod/v4/locales";
+
 import ProjectModel from "../models/project.model.js";
 
 export const createProjectService = async function (data: {
@@ -40,26 +42,25 @@ export const getProjectsInWorkspaceService = async function (data: {
 
     const totalCount = await ProjectModel.countDocuments({ workspace: workspace._id });
     const totalPages = Math.ceil(totalCount / limit);
+    const isInvalidPageNumber = page > totalPages;
 
-    if (page > totalPages) {
-        return {
-            projects: [],
-            totalCount: totalCount,
-            totalPages: totalPages,
-            skipCount: totalCount,
-        };
-    }
-
-    const projects = await ProjectModel.find({ workspace: workspace._id })
-        .skip(skip)
-        .limit(limit)
-        .populate({ path: "createdBy", select: "name email profilePicture" })
-        .sort({ createdAt: -1 });
+    const projects = isInvalidPageNumber
+        ? []
+        : await ProjectModel.find({ workspace: workspace._id })
+              .skip(skip)
+              .limit(limit)
+              .populate({ path: "createdBy", select: "name email profilePicture" })
+              .sort({ createdAt: -1 });
 
     return {
         projects,
-        totalCount,
-        totalPages: Math.ceil(totalCount / limit),
-        skipCount: skip,
+        pagination: {
+            totalCount,
+            totalPages,
+            skipCount: isInvalidPageNumber ? totalPages : skip,
+            pageNumber: page,
+            pageSize: limit,
+            pageNumberValid: !isInvalidPageNumber,
+        },
     };
 };
