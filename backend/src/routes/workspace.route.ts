@@ -11,6 +11,7 @@ import {
     joinWorksapceByInviteCode,
     updateWorkspace,
 } from "../controllers/workspace.controller.js";
+import projectRoutes from "./project.route.js";
 
 const workspaceRoutes = Router();
 
@@ -24,5 +25,8 @@ workspaceRoutes.route("/:workspaceId/analytics").get(getWorkspaceAnalytics);
 workspaceRoutes.route("/:workspaceId/members").get(getWorkspaceMembers);
 workspaceRoutes.route("/:workspaceId/members/:memberId/role").put(changeWorkspaceMemberRole);
 workspaceRoutes.route("/invites/:inviteCode/join").post(joinWorksapceByInviteCode);
+
+// Project Routes
+workspaceRoutes.use("/:workspaceId/projects", projectRoutes);
 
 export default workspaceRoutes;
