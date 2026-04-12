@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { createProject } from "../controllers/project.controller.js";
+import { createProject, getAllProjectsInWorkspace } from "../controllers/project.controller.js";
 const projectRoutes = Router({ mergeParams: true });
 
 // workspaceRoutes.use("/:workspaceId/projects", projectRoutes);
-projectRoutes.route("/").post(createProject);
+projectRoutes.route("/").post(createProject).get(getAllProjectsInWorkspace);
 
 export default projectRoutes;
 
@@ -16,11 +16,6 @@ export default projectRoutes;
 // projectRoutes.delete(
 //   "/:id/workspace/:workspaceId/delete",
 //   deleteProjectController
-// );
-
-// projectRoutes.get(
-//   "/workspace/:workspaceId/all",
-//   getAllProjectsInWorkspaceController
 // );
 
 // projectRoutes.get(

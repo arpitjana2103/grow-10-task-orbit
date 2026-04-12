@@ -1,3 +1,5 @@
+import type { TWorkspaceDoc } from "../models/workspace.model.js";
+
 import ProjectModel from "../models/project.model.js";
 
 export const createProjectService = async function (data: {
@@ -24,4 +26,40 @@ export const createProjectService = async function (data: {
     });
 
     return await project.save();
+};
+
+export const getProjectsInWorkspaceService = async function (data: {
+    workspace: TWorkspaceDoc;
+    pageSize: number | undefined;
+    pageNumber: number | undefined;
+}) {
+    const { workspace, pageSize, pageNumber } = data;
+    const page = pageNumber || 1;
+    const limit = pageSize || 10;
+    const skip = (page - 1) * limit;
+
+    const totalCount = await ProjectModel.countDocuments({ workspace: workspace._id });
+    const totalPages = Math.ceil(totalCount / limit);
+
+    if (page > totalPages) {
+        return {
+            projects: [],
+            totalCount: totalCount,
+            totalPages: totalPages,
+            skipCount: totalCount,
+        };
+    }
+
+    const projects = await ProjectModel.find({ workspace: workspace._id })
+        .skip(skip)
+        .limit(limit)
+        .populate({ path: "createdBy", select: "name email profilePicture" })
+        .sort({ createdAt: -1 });
+
+    return {
+        projects,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        skipCount: skip,
+    };
 };

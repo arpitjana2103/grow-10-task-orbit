@@ -20,6 +20,10 @@ const nameSchema = z.string().trim().min(1).max(255);
 const descriptionSchema = z.string().trim();
 
 export const projectIdSchema = z.string().trim().min(1);
+export const projectPaginationQuerySchema = z.object({
+    pageSize: z.coerce.number().min(1).optional(),
+    pageNumber: z.coerce.number().min(1).optional(),
+});
 
 export const createProjectSchema = z.object({
     emoji: emojiSchema.optional(),
