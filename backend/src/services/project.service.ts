@@ -1,10 +1,12 @@
 import type { TWorkspaceDoc } from "../models/workspace.model.js";
 
-import { is } from "zod/v4/locales";
+import mongoose from "mongoose";
 
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
+import { TaskStatusEnum } from "../enums/task.enum.js";
 import ProjectModel from "../models/project.model.js";
+import TaskModel from "../models/task.model.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 
 export const createProjectService = async function (data: {
@@ -91,4 +93,71 @@ export const getProjectByIdAndWorkspaceIdService = async function (data: {
     }
 
     return project;
+};
+
+export const getProjectAnalyticsService = async function (data: {
+    workspace: TWorkspaceDoc;
+    projectId: string;
+}) {
+    const { workspace, projectId } = data;
+
+    const project = await ProjectModel.findOne({
+        _id: projectId,
+        workspace: workspace._id,
+    });
+
+    if (!project) {
+        throw new AppError({
+            publicMessage: `Project not found with id:${projectId} in workspace:${workspace._id.toString()}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    const currentDate = new Date();
+
+    // USING Mongoose aggregate
+    const taskAnalytics = await TaskModel.aggregate([
+        {
+            $match: {
+                project: new mongoose.Types.ObjectId(projectId),
+            },
+        },
+        {
+            $facet: {
+                totalTasks: [{ $count: "count" }],
+                overdueTasks: [
+                    {
+                        $match: {
+                            dueDate: { $lt: currentDate },
+                            status: {
+                                $ne: TaskStatusEnum.DONE,
+                            },
+                        },
+                    },
+                    {
+                        $count: "count",
+                    },
+                ],
+                completedTasks: [
+                    {
+                        $match: {
+                            status: TaskStatusEnum.DONE,
+                        },
+                    },
+                    { $count: "count" },
+                ],
+            },
+        },
+    ]);
+
+    const _analytics = taskAnalytics[0];
+
+    const analytics = {
+        totalTasks: _analytics.totalTasks[0]?.count || 0,
+        overdueTasks: _analytics.overdueTasks[0]?.count || 0,
+        completedTasks: _analytics.completedTasks[0]?.count || 0,
+    };
+
+    return analytics;
 };
