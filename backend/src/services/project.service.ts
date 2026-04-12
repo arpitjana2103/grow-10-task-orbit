@@ -2,7 +2,10 @@ import type { TWorkspaceDoc } from "../models/workspace.model.js";
 
 import { is } from "zod/v4/locales";
 
+import { HTTPSTATUSCODE } from "../config/http.config.js";
+import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import ProjectModel from "../models/project.model.js";
+import { AppError } from "../utils/errors/app-error.util.js";
 
 export const createProjectService = async function (data: {
     userId: string;
@@ -63,4 +66,29 @@ export const getProjectsInWorkspaceService = async function (data: {
             pageNumberValid: !isInvalidPageNumber,
         },
     };
+};
+
+export const getProjectByIdAndWorkspaceIdService = async function (data: {
+    projectId: string;
+    workspace: TWorkspaceDoc;
+}) {
+    const { projectId, workspace } = data;
+
+    const project = await ProjectModel.findOne({
+        _id: projectId,
+        workspace: workspace._id,
+    }).populate({
+        path: "createdBy",
+        select: "name email profilePicture",
+    });
+
+    if (!project) {
+        throw new AppError({
+            publicMessage: `Project not found with id:${projectId} in workspace:${workspace._id.toString()}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    return project;
 };

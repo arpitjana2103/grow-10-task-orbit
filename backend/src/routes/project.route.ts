@@ -1,10 +1,15 @@
 import { Router } from "express";
 
-import { createProject, getAllProjectsInWorkspace } from "../controllers/project.controller.js";
+import {
+    createProject,
+    getAllProjectsInWorkspace,
+    getProjectByIdandWorkspaceId,
+} from "../controllers/project.controller.js";
 const projectRoutes = Router({ mergeParams: true });
 
 // workspaceRoutes.use("/:workspaceId/projects", projectRoutes);
 projectRoutes.route("/").post(createProject).get(getAllProjectsInWorkspace);
+projectRoutes.route("/:projectId").get(getProjectByIdandWorkspaceId);
 
 export default projectRoutes;
 
@@ -21,9 +26,4 @@ export default projectRoutes;
 // projectRoutes.get(
 //   "/:id/workspace/:workspaceId/analytics",
 //   getProjectAnalyticsController
-// );
-
-// projectRoutes.get(
-//   "/:id/workspace/:workspaceId",
-//   getProjectByIdAndWorkspaceIdController
 // );
