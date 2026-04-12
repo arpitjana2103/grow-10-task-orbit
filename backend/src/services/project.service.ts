@@ -3,10 +3,12 @@ import type { TWorkspaceDoc } from "../models/workspace.model.js";
 import mongoose from "mongoose";
 
 import { HTTPSTATUSCODE } from "../config/http.config.js";
+import { logger } from "../config/logger.config.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import { TaskStatusEnum } from "../enums/task.enum.js";
 import ProjectModel from "../models/project.model.js";
 import TaskModel from "../models/task.model.js";
+import { getErrorMessage } from "../utils/error.util.js";
 import { AppError } from "../utils/errors/app-error.util.js";
 
 export const createProjectService = async function (data: {
@@ -127,6 +129,46 @@ export const updateProjectByIdAndWorkspaceService = async function (data: {
     if (name) project.name = name;
     if (description) project.description = description;
     return await project.save();
+};
+
+export const deleteProjectByIdAndWorkspaceService = async function (data: {
+    projectId: string;
+    workspace: TWorkspaceDoc;
+}) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const { projectId, workspace } = data;
+        const project = await ProjectModel.deleteOne({
+            _id: projectId,
+            workspace: workspace._id,
+        });
+
+        if (!project) {
+            throw new AppError({
+                publicMessage: `Project not found with id:${projectId} in workspace:${workspace._id.toString()}`,
+                statusCode: HTTPSTATUSCODE.NOT_FOUND,
+                errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+            });
+        }
+
+        await TaskModel.deleteMany({
+            project: projectId,
+        });
+        await session.commitTransaction();
+    } catch (error) {
+        logger.error({ err: error });
+        await session.abortTransaction();
+        if (error instanceof AppError) throw error;
+        throw new AppError({
+            publicMessage: "Failed to Delete Workspace",
+            internalMessage: getErrorMessage(error),
+            statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
+            errorCode: ErrorCodeEnum.INTERNAL_SERVER_ERROR,
+        });
+    } finally {
+        session.endSession();
+    }
 };
 
 export const getProjectAnalyticsService = async function (data: {
