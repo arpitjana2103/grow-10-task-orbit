@@ -1,10 +1,11 @@
 import { Router } from "express";
 
-import { getAllTasksInWorkspace } from "../controllers/workspace.controller.js";
 import {
     changeWorkspaceMemberRole,
     createWorkspace,
+    deleteTask,
     deleteWorkspace,
+    getAllTasksInWorkspace,
     getAllWorkspacesUserIsMember,
     getWorkspaceAnalytics,
     getWorkspaceByIdwithMembers,
@@ -27,6 +28,7 @@ workspaceRoutes
     .delete(deleteWorkspace);
 workspaceRoutes.route("/:workspaceId/analytics").get(getWorkspaceAnalytics);
 workspaceRoutes.route("/:workspaceId/tasks").get(getAllTasksInWorkspace);
+workspaceRoutes.route("/:workspaceId/tasks/:taskId").delete(deleteTask);
 workspaceRoutes.route("/:workspaceId/members").get(getWorkspaceMembers);
 workspaceRoutes.route("/:workspaceId/members/:memberId/role").put(changeWorkspaceMemberRole);
 workspaceRoutes.route("/invites/:inviteCode/join").post(joinWorksapceByInviteCode);

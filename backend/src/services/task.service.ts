@@ -180,3 +180,24 @@ export const getAllTasksInWorkspaceService = async function (data: {
         },
     };
 };
+
+export const deleteTaskService = async function (data: { taskId: string; workspaceId: string }) {
+    const { taskId, workspaceId } = data;
+
+    const task = await TaskModel.findOne({
+        _id: taskId,
+        workspace: workspaceId,
+    });
+
+    if (!task) {
+        throw new AppError({
+            publicMessage: `Task not found with id:${taskId} in workspace:${workspaceId}`,
+            internalMessage: `Task _id:${taskId} not found for workspace:${workspaceId}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
+
+    await task.deleteOne();
+    return task;
+};
