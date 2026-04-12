@@ -1,5 +1,7 @@
 import type { TTaskPriorityEnum, TTaskStatusEnum } from "../enums/task.enum.js";
 
+import mongoose from "mongoose";
+
 import { HTTPSTATUSCODE } from "../config/http.config.js";
 import { ErrorCodeEnum } from "../enums/error-code.enum.js";
 import MemberModel from "../models/member.model.js";
@@ -110,4 +112,71 @@ export const updateTaskService = async function (data: {
     }
 
     return await task.save();
+};
+
+export const getAllTasksInWorkspaceService = async function (data: {
+    workspaceId: string;
+    filters: {
+        projectId: string | undefined;
+        status: string[] | undefined;
+        priority: string[] | undefined;
+        assignedTo: string[] | undefined;
+        keyword: string | undefined;
+        dueDate: Date | undefined;
+    };
+    pagination: {
+        pageNumber: number | undefined;
+        pageSize: number | undefined;
+    };
+}) {
+    const { workspaceId, filters, pagination } = data;
+    const { projectId, status, priority, assignedTo, keyword, dueDate } = filters;
+    const page = pagination.pageNumber ?? 1;
+    const limit = pagination.pageSize ?? 10;
+    const skip = (page - 1) * limit;
+
+    // Build the filter query dynamically — only add a condition if the value was provided
+    const query: Record<string, unknown> = { workspace: workspaceId };
+
+    if (projectId) query["project"] = new mongoose.Types.ObjectId(projectId);
+    if (status?.length) query["status"] = { $in: status };
+    if (priority?.length) query["priority"] = { $in: priority };
+    if (assignedTo?.length) query["assignedTo"] = { $in: assignedTo };
+
+    // Case-insensitive substring match on task title
+    if (keyword) query["title"] = { $regex: keyword, $options: "i" };
+
+    // Match tasks whose dueDate falls anywhere within the given calendar day (UTC)
+    if (dueDate) {
+        const start = new Date(dueDate);
+        start.setUTCHours(0, 0, 0, 0);
+        const end = new Date(dueDate);
+        end.setUTCHours(23, 59, 59, 999);
+        query["dueDate"] = { $gte: start, $lte: end };
+    }
+
+    const totalCount = await TaskModel.countDocuments(query);
+    const totalPages = Math.ceil(totalCount / limit);
+    const isInvalidPageNumber = page > totalPages;
+
+    const tasks = isInvalidPageNumber
+        ? []
+        : await TaskModel.find(query)
+              .skip(skip)
+              .limit(limit)
+              .populate({ path: "assignedTo", select: "name email profilePicture" })
+              .populate({ path: "project", select: "name emoji" })
+              .sort({ createdAt: -1 })
+              .lean();
+
+    return {
+        tasks,
+        pagination: {
+            totalCount,
+            totalPages,
+            pageNumber: page,
+            pageSize: limit,
+            pageNumberValid: !isInvalidPageNumber,
+        },
+    };
 };
