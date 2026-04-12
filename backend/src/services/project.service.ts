@@ -86,14 +86,6 @@ export const getProjectByIdAndWorkspaceIdService = async function (data: {
         select: "name email profilePicture",
     });
 
-    if (!project) {
-        throw new AppError({
-            publicMessage: `Project not found with id:${projectId} in workspace:${workspace._id.toString()}`,
-            statusCode: HTTPSTATUSCODE.NOT_FOUND,
-            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
-        });
-    }
-
     return project;
 };
 

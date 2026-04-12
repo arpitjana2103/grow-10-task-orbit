@@ -158,6 +158,13 @@ export const getProjectByIdandWorkspaceId = handleAsyncError(async function (
     });
 
     const project = await getProjectByIdAndWorkspaceIdService({ projectId, workspace });
+    if (!project) {
+        throw new AppError({
+            publicMessage: `Project not found with id:${projectId} in workspace:${workspace._id.toString()}`,
+            statusCode: HTTPSTATUSCODE.NOT_FOUND,
+            errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
+        });
+    }
 
     sendResponse(res, {
         statusCode: HTTPSTATUSCODE.OK,
