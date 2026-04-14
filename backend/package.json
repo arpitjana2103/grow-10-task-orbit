@@ -13,7 +13,7 @@
         "url": "git+https://github.com/arpitjana2103/grow-10-task-orbit.git"
     },
     "type": "module",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
         "start:dev": "cross-env NODE_ENV=development tsx watch --clear-screen=true src/index.ts",
         "start:dev-prod": "cross-env NODE_ENV=production tsx watch --clear-screen=true src/index.ts",
@@ -21,11 +21,11 @@
         "build": "rimraf dist && tsc",
         "typecheck": "tsc --noEmit",
         "typecheck:watch": "tsc --noEmit --watch",
-        "fmt": "oxfmt",
-        "fmt:check": "oxfmt --check",
-        "lint": "oxlint",
-        "lint:fix": "oxlint --fix",
-        "seed:role": "tsx src/seeder/role.seeder.ts"
+        "fmt": "oxfmt --config .oxfmtrc.json .",
+        "fmt:check": "oxfmt --config .oxfmtrc.json . --check",
+        "lint": "oxlint --config .oxlintrc.json .",
+        "lint:fix": "oxlint --config .oxlintrc.json . --fix",
+        "seed:role": "cross-env NODE_ENV=development tsx src/seeder/role.seeder.ts"
     },
     "dependencies": {
         "bcrypt": "^6.0.0",

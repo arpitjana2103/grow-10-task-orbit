@@ -1,13 +1,14 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "plugins": ["unicorn", "typescript", "oxc"],
-    "options": {
-        "typeAware": true,
-        "typeCheck": true
-    },
+    "plugins": ["eslint", "import", "node", "unicorn", "typescript", "oxc"],
     "rules": {
         "eslint/no-unused-vars": "off",
         "typescript/explicit-function-return-type": "off",
-        "unicorn/no-empty-file": "off"
+        "unicorn/no-empty-file": "off",
+        "unicorn/prefer-node-protocol": "error"
+    },
+    "env": {
+        "es6": true,
+        "node": true
     }
 }
