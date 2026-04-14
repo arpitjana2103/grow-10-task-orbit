@@ -39,9 +39,9 @@ const seedRoles = async function (): Promise<void> {
         logger.error({ err: error }, "Role Seeding Error");
         await session.abortTransaction();
     } finally {
-        session.endSession();
+        await session.endSession();
         await mongoose.connection.close();
     }
 };
 
-seedRoles();
+await seedRoles();

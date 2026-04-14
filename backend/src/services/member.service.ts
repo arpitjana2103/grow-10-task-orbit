@@ -86,7 +86,7 @@ export const changeMemberRoleService = async function (data: {
     if (!member) {
         throw new AppError({
             internalMessage: `Member not found in workspace`,
-            publicMessage: `member:${memberId} not found in workspace:${workspace._id}`,
+            publicMessage: `member:${memberId} not found in workspace:${workspace._id.toString()}`,
             statusCode: HTTPSTATUSCODE.INTERNAL_SERVER_ERROR,
             errorCode: ErrorCodeEnum.RESOURCE_NOT_FOUND,
         });

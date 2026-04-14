@@ -345,7 +345,7 @@ export const joinWorksapceByInviteCode = handleAsyncError(async function (
     if (membership) {
         throw new AppError({
             statusCode: HTTPSTATUSCODE.CONFLICT,
-            publicMessage: `User:${userId} is already a member of workspace:${workspace._id}`,
+            publicMessage: `User:${userId} is already a member of workspace:${workspace._id.toString()}`,
             errorCode: ErrorCodeEnum.RESOURCE_CONFLICT,
         });
     }

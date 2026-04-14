@@ -159,7 +159,7 @@ export const deleteProjectByIdAndWorkspaceService = async function (data: {
             errorCode: ErrorCodeEnum.INTERNAL_SERVER_ERROR,
         });
     } finally {
-        session.endSession();
+        await session.endSession();
     }
 };
 

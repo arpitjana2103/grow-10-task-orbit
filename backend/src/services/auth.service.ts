@@ -204,7 +204,7 @@ export const createUserService = async function (data: UserData): Promise<TUserD
             errorCode: ErrorCodeEnum.INTERNAL_SERVER_ERROR,
         });
     } finally {
-        session.endSession();
+        await session.endSession();
     }
 };
 

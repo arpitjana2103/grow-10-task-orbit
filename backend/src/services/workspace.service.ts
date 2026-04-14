@@ -38,7 +38,9 @@ export const createWorkspaceService = async function (
     }
 
     // 2. Find Owner Role
-    const ownerRole = await RoleModel.findOne({ name: RoleEnum.OWNER });
+    const ownerRole = await RoleModel.findOne({
+        name: RoleEnum.OWNER,
+    });
     if (!ownerRole) {
         throw new AppError({
             internalMessage: `Role '${RoleEnum.OWNER}' not found in database`,
@@ -72,13 +74,30 @@ export const createWorkspaceService = async function (
 };
 
 export const getAllWorkspacesUserIsMemberService = async function (userId: string) {
-    const members = await MemberModel.find({ user: userId })
-        .populate({ path: "workspace", select: "name description" })
-        .populate({ path: "role", select: "name" })
+    const members = await MemberModel.find({
+        user: userId,
+    })
+        .populate({
+            path: "workspace",
+            select: "name description",
+            options: {
+                lean: true,
+            },
+        })
+        .populate({
+            path: "role",
+            select: "name",
+            options: {
+                lean: true,
+            },
+        })
         .lean()
         .exec();
     return members.map(function (m) {
-        return { ...m.workspace, role: (m.role as RoleDocument).name };
+        return {
+            ...(m.workspace as unknown as TLeanWorkspaceDoc),
+            role: (m.role as RoleDocument).name,
+        };
     });
 };
 
@@ -91,8 +110,12 @@ export const getWorkspaceAnalyticsService = async function (workspace: TWorkspac
 
     const overdueTasks = await TaskModel.countDocuments({
         workspace: workspace._id,
-        dueDate: { $lt: today },
-        status: { $ne: TaskStatusEnum.DONE },
+        dueDate: {
+            $lt: today,
+        },
+        status: {
+            $ne: TaskStatusEnum.DONE,
+        },
     });
 
     const completedTasks = await TaskModel.countDocuments({
@@ -136,35 +159,48 @@ export const deleteWorkspaceService = async (data: {
         if (!workspace.owner.equals(user._id)) {
             throw new AppError({
                 statusCode: HTTPSTATUSCODE.UNAUTHORIZED,
-                internalMessage: `user:${user._id} trying to delete workspace:${workspace._id}, while workspace.owner:${workspace.owner}`,
+                internalMessage: `user:${user._id.toString()}
+                trying to delete workspace:${workspace._id.toString()},
+                while workspace.owner:${workspace.owner.toString()}`,
+
                 publicMessage: `You are authorized to delete this workspace`,
                 errorCode: ErrorCodeEnum.ACCESS_UNAUTHORIZED,
             });
         }
 
         // 2. Delete Projects, Tasks, Members belongs to workspace
-        await ProjectModel.deleteMany({ workspace: workspace._id }).session(session);
-        await TaskModel.deleteMany({ workspace: workspace._id }).session(session);
+        await ProjectModel.deleteMany({
+            workspace: workspace._id,
+        }).session(session);
+        await TaskModel.deleteMany({
+            workspace: workspace._id,
+        }).session(session);
         await MemberModel.deleteMany({
             workspaceId: workspace._id,
         }).session(session);
 
         // 3. Update the user's currentWorkspace if it matches the worksapce to delete
         if (user.currentWorkspace?.equals(workspace._id)) {
-            const memberWorkspace = await MemberModel.findOne({ userId: user._id }).session(
-                session,
-            );
+            const memberWorkspace = await MemberModel.findOne({
+                userId: user._id,
+            }).session(session);
             // Update the user's currentWorkspace
             user.currentWorkspace = memberWorkspace ? memberWorkspace._id : null;
 
-            await user.save({ session });
+            await user.save({
+                session,
+            });
         }
 
         // 4. Delete the workspace
-        await workspace.deleteOne({ session });
+        await workspace.deleteOne({
+            session,
+        });
         await session.commitTransaction();
     } catch (error) {
-        logger.error({ err: error });
+        logger.error({
+            err: error,
+        });
         await session.abortTransaction();
         if (error instanceof AppError) throw error;
         throw new AppError({
@@ -174,6 +210,6 @@ export const deleteWorkspaceService = async (data: {
             errorCode: ErrorCodeEnum.INTERNAL_SERVER_ERROR,
         });
     } finally {
-        session.endSession();
+        await session.endSession();
     }
 };
