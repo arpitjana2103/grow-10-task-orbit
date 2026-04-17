@@ -9,20 +9,16 @@
         "moduleResolution": "NodeNext", // Use Node.js-style module resolution (required for NodeNext)
         "target": "ES2022", // Output JS version (Node 18+ supports ES2022 natively)
         "lib": ["ES2022"], // Available JS APIs (aligned with target)
-        "esModuleInterop": true, // Enables clean default imports for CommonJS modules
-
         // 🔗 Path & Types
         "types": ["node"], // Include Node.js global type definitions ( npm i -D @types/node )
         "typeRoots": [
             // Lookup paths for type definitions
             "./node_modules/@types", // Standard @types packages
-            "./src/@types" // Custom local type declarations
+            "./src/@types", // Custom local type declarations
         ],
 
         // 📦 Output Control
         "sourceMap": true, // Enable .map files (accurate stack traces in dev & prod)
-        "declaration": false, // Do not generate .d.ts files
-        "declarationMap": false, // Disable mapping for declarations
 
         // 🛡️ Type Safety
         "strict": true, // Enable all strict type-checking rules
@@ -33,7 +29,6 @@
 
         // ⚙️ Module Behavior (Important for ESM)
         "verbatimModuleSyntax": true, // Keeps imports exactly as written (no rewriting)
-        "isolatedModules": true, // Ensures each file compiles independently (required for tsx)
         "moduleDetection": "force", // Treat all files as modules (no accidental script mode)
 
         // 🚨 Code Safety
@@ -44,12 +39,12 @@
         // ⚡ Performance
         "skipLibCheck": true, // Skip type checking of node_modules (faster builds)
         "incremental": true, // Cache build info for faster subsequent type checks
-        "tsBuildInfoFile": ".tsbuildinfo" // Location of incremental build cache file
+        "tsBuildInfoFile": ".tsbuildinfo", // Location of incremental build cache file
     },
 
     // 📂 File Inclusion
     "include": [
-        "src/**/*.ts" // Include all TS files in src
+        "src/**/*.ts", // Include all TS files in src
     ],
 
     // 🚫 File Exclusion
@@ -58,6 +53,6 @@
         "dist", // Ignore build output
         "test", // Ignore test folder
         "**/*.spec.ts", // Ignore spec test files
-        "**/*.test.ts" // Ignore unit test files
-    ]
+        "**/*.test.ts", // Ignore unit test files
+    ],
 }

@@ -9,15 +9,8 @@
             "builtin",
             "type",
             "external",
-            [
-                "internal",
-                "subpath"
-            ],
-            [
-                "parent",
-                "sibling",
-                "index"
-            ],
+            ["internal", "subpath"],
+            ["parent", "sibling", "index"],
             "style",
             "unknown"
         ],
