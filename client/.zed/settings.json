@@ -23,18 +23,17 @@
     },
     "languages": {
         "CSS": {
+            "language_servers": [
+                "tailwindcss-language-server",
+                "microsoft/vscode-css-languageservice"
+            ],
             "format_on_save": "on",
             "prettier": {
-                "allowed": false
+                "allowed": true
             },
-            "formatter": [
-                {
-                    "language_server": {
-                        "name": "oxfmt"
-                    }
-                }
-            ]
+            "formatter": "prettier"
         },
+
         "HTML": {
             "format_on_save": "on",
             "prettier": {
@@ -49,6 +48,7 @@
             ]
         },
         "JavaScript": {
+            "language_servers": ["!eslint", "..."],
             "format_on_save": "on",
             "prettier": {
                 "allowed": false
@@ -104,6 +104,7 @@
             ]
         },
         "TypeScript": {
+            "language_servers": ["!eslint", "..."],
             "format_on_save": "on",
             "prettier": {
                 "allowed": false
@@ -120,6 +121,7 @@
             ]
         },
         "TSX": {
+            "language_servers": ["!eslint", "..."],
             "format_on_save": "on",
             "prettier": {
                 "allowed": false
