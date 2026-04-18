@@ -1,3 +1,5 @@
+import path from "path";
+
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import oxlint from "vite-plugin-oxlint";
@@ -5,4 +7,9 @@ import oxlint from "vite-plugin-oxlint";
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [react(), oxlint()],
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
+        },
+    },
 });
