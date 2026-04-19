@@ -1,0 +1,38 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["react", "import", "typescript", "unicorn", "oxc"],
+    "options": {
+        "typeAware": true,
+        "typeCheck": true
+    },
+    "categories": {
+        "correctness": "error",
+        "suspicious": "warn",
+        "perf": "warn",
+        "style": "off"
+    },
+    "rules": {
+        "eslint/no-unused-vars": "off",
+        "typescript/explicit-function-return-type": "off",
+        "unicorn/no-empty-file": "off",
+
+        "react/only-export-components": ["warn", { "allowConstantExport": true }],
+        "react/react-in-jsx-scope": "off",
+
+        "import/no-unassigned-import": "off",
+        "unicorn/filename-case": "off",
+        "react/jsx-max-depth": "off",
+        "eslint/func-style": "off",
+        "eslint/no-magic-numbers": "off"
+    },
+    "env": {
+        "builtin": true,
+        "browser": true
+    },
+    "settings": {
+        "react": {
+            "version": "19.2.4"
+        }
+    },
+    "ignorePatterns": ["dist", "node_modules", "vite.config.ts"]
+}
