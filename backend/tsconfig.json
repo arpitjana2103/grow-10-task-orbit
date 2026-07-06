@@ -11,11 +11,6 @@
         "lib": ["ES2022"], // Available JS APIs (aligned with target)
         // 🔗 Path & Types
         "types": ["node"], // Include Node.js global type definitions ( npm i -D @types/node )
-        "typeRoots": [
-            // Lookup paths for type definitions
-            "./node_modules/@types", // Standard @types packages
-            "./src/@types", // Custom local type declarations
-        ],
 
         // 📦 Output Control
         "sourceMap": true, // Enable .map files (accurate stack traces in dev & prod)
@@ -30,6 +25,7 @@
         // ⚙️ Module Behavior (Important for ESM)
         "verbatimModuleSyntax": true, // Keeps imports exactly as written (no rewriting)
         "moduleDetection": "force", // Treat all files as modules (no accidental script mode)
+        "resolveJsonModule": true, // usefull when we import json => import packageJson from "../package.json";
 
         // 🚨 Code Safety
         "noUncheckedSideEffectImports": true, // Warn on imports with hidden side effects
