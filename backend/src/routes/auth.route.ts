@@ -134,12 +134,12 @@ authRoutes.route("/google/callback").get(
                     - this.error(error);
                     - error is forwarded to Express error pipeline : if (err) return next(err);
 
-        Step 12: Passport calls res.login(user) automatically [ As session:true ]
+        Step 12: Passport calls req.login(user) automatically [ As session:true ]
             - req.login() method set by `passport.initialize()` Middleware
             - Internally:
                 - serializeUser(user, done)
-                - done(null, user._id)
-                - req.session.passport = { user: user.id }
+                - done(null, user._id.toString())
+                - req.session = { passport : { user: user.id } }
                 - req.session.save()
 
             - Cookie behavior:

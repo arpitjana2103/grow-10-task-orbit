@@ -3,7 +3,6 @@ import "./config/passport.config.js";
 
 import type { Request, Response, NextFunction } from "express";
 
-// import cookieSession from "cookie-session";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
@@ -63,26 +62,6 @@ app.use(
     }),
 );
 
-// Middleware: Configures cookie-based session storage using cookie-session
-// - Stores session data directly in the client-side cookie (no server-side store)
-// - Cookie name: "to-session"
-// - Signs cookie using SESSION_SECRET (integrity, not encryption)
-// - Session expiry: 24h (maxAge)
-// - secure: true in production (HTTPS only)
-// - httpOnly: prevents client-side JS access
-// - sameSite: "lax" (basic CSRF protection)
-// - Note: Limited by cookie size (~4KB)
-// app.use(
-//     cookieSession({
-//         // name: "to-session",
-//         // keys: [config.SESSION_SECRET],
-//         // maxAge: ms("24h"),
-//         // secure: runningOnProduction(),
-//         // httpOnly: true,
-//         // sameSite: "lax",
-//     }),
-// );
-
 // Middleware: Configures server-side session storage using express-session
 // - Stores session data on the server (MemoryStore by default; replaceable with Redis/DB)
 // - Cookie name: "to-session" (contains only session ID, not actual data)
@@ -110,7 +89,7 @@ app.use(
         cookie: {
             // secure: ensures cookie is sent only over HTTPS in production
             // secure: runningOnProduction(),
-            secure: false,
+            secure: runningOnProduction(),
 
             // httpOnly: prevents client-side JS access (mitigates XSS)
             httpOnly: true,
